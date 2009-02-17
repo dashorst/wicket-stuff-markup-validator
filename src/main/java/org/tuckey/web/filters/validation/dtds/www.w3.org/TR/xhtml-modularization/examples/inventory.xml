@@ -1,0 +1,14 @@
+<!DOCTYPE shelf SYSTEM "inventory-1.dtd">
+<shelf xmlns="http://www.example.com/xmlns/inventory">
+    <item>
+        <desc>
+	  this is a description.
+	</desc>
+        <sku>
+	  this is the price.
+        </sku>
+        <price>
+	  this is the price.
+	</price>
+    </item>
+</shelf>

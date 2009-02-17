@@ -1,0 +1,109 @@
+<!-- ....................................................................... -->
+<!-- SKELETAL DTD  ......................................................... -->
+<!-- file: TEMPLATE.dtd
+-->
+
+<!-- SKELETAL DTD
+-->
+<!-- This is a skeletal driver file. Modify it however you want, paying
+     careful attention to the embedded comments about order.
+
+     Please use this formal public identifier to identify it:
+
+         "-//W3C//DTD XHTML MYDTD//EN"
+-->
+<!ENTITY % XHTML.version  "-//W3C//DTD XHTML MYDTD//EN" >
+
+<!-- Bring in any qualified name modules outside of XHTML -->
+<!ENTITY % MODULE-qname.mod "">
+%MODULE-qname.mod;
+
+<!-- Define any extra prefixed namespaces that this DTD relies upon -->
+<!ENTITY NS.prefixed.extras.attrib "" >
+
+<!-- Define the Content Model file for the framework to use -->
+<!ENTITY % xhtml-model.mod "MYMODEL">
+
+<!-- reserved for future use with document profiles -->
+<!ENTITY % XHTML.profile  "" >
+
+<!-- Bi-directional text support
+     This feature-test entity is used to declare elements
+     and attributes used for internationalization support. Set it to INCLUDE
+	 or IGNORE as appropriate for your markup language.
+-->
+<!ENTITY % XHTML.bidi            "IGNORE" >
+
+<!-- ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: -->
+
+<!-- Pre-Framework Redeclaration placeholder  .................... -->
+<!-- This serves as a location to insert markup declarations
+     into the DTD prior to the framework declarations.
+-->
+<!ENTITY % xhtml-prefw-redecl.module "IGNORE" >
+<![%xhtml-prefw-redecl.module;[
+%xhtml-prefw-redecl.mod;
+<!-- end of xhtml-prefw-redecl.module -->]]>
+
+<!-- The events module should be included here if you need it. In this
+     skeleton it is IGNOREd.
+-->
+<!ENTITY % xhtml-events.module "IGNORE" >
+
+<!-- Modular Framework Module  ................................... -->
+<!ENTITY % xhtml-framework.module "INCLUDE" >
+<![%xhtml-framework.module;[
+<!ENTITY % xhtml-framework.mod
+     PUBLIC "-//W3C//ENTITIES XHTML 1.1 Modular Framework 1.0//EN"
+            "xhtml11-framework-1.mod" >
+%xhtml-framework.mod;]]>
+
+<!-- Post-Framework Redeclaration placeholder  ................... -->
+<!-- This serves as a location to insert markup declarations 
+     into the DTD following the framework declarations.
+-->
+<!ENTITY % xhtml-postfw-redecl.module "IGNORE" >
+<![%xhtml-postfw-redecl.module;[
+%xhtml-postfw-redecl.mod;
+<!-- end of xhtml-postfw-redecl.module -->]]>
+
+<!-- Text Module (required)  ............................... -->
+<!ENTITY % xhtml-text.module "INCLUDE" >
+<![%xhtml-text.module;[
+<!ENTITY % xhtml-text.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML 1.1 Text 1.0//EN"
+            "xhtml11-text-1.mod" >
+%xhtml-text.mod;]]>
+
+<!-- Hypertext Module (required) ................................. -->
+<!ENTITY % xhtml-hypertext.module "INCLUDE" >
+<![%xhtml-hypertext.module;[
+<!ENTITY % xhtml-hypertext.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML 1.1 Hypertext 1.0//EN"
+            "xhtml11-hypertext-1.mod" >
+%xhtml-hypertext.mod;]]>
+
+<!-- Lists Module (required)  .................................... -->
+<!ENTITY % xhtml-list.module "INCLUDE" >
+<![%xhtml-list.module;[
+<!ENTITY % xhtml-list.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML 1.1 Lists 1.0//EN"
+            "xhtml11-list-1.mod" >
+%xhtml-list.mod;]]>
+
+<!-- Your modules can be included here.  Use the basic form defined above, and
+     be sure to include the public FPI definition in your catalog file for
+	 each module that you define. You may also include W3C-defined modules at
+	 this point.
+-->
+
+<!-- Document Structure Module (required)  ....................... -->
+<!ENTITY % xhtml-struct.module "INCLUDE" >
+<![%xhtml-struct.module;[
+<!ENTITY % xhtml-struct.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML 1.1 Document Structure 1.0//EN"
+            "xhtml11-struct-1.mod" >
+%xhtml-struct.mod;]]>
+
+<!-- end of SKELETAL DTD  .................................................. -->
+<!-- ....................................................................... -->

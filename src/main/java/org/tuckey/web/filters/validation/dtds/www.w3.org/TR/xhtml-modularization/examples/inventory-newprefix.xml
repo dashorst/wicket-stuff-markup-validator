@@ -1,0 +1,17 @@
+<!DOCTYPE i:shelf SYSTEM "inventory-1.dtd" [
+	<!ENTITY % Inventory.prefixed "INCLUDE">
+	<!ENTITY % Inventory.prefix "i">
+]>
+<i:shelf xmlns:i="http://www.example.com/xmlns/inventory">
+    <i:item>
+        <i:desc>
+          this is a description.
+        </i:desc>
+        <i:sku>
+          this is the price.
+        </i:sku>
+        <i:price>
+          this is the price.
+        </i:price>
+    </i:item>
+</i:shelf>

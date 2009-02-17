@@ -1,0 +1,77 @@
+<!-- ....................................................................... -->
+<!-- MYML DTD  ............................................................. -->
+<!-- file: myml-1_0.dtd -->
+
+<!-- This is the DTD driver for myml 1.0.
+
+     Please use this formal public identifier to identify it:
+
+         "-//MY COMPANY//DTD XHTML MYML 1.0//EN"
+
+     And this namespace for myml-unique elements:
+
+         xmlns:myml="http://www.example.com/xmlns/myml"
+-->
+<!ENTITY % XHTML.version  "-//MY COMPANY//DTD XHTML MYML 1.0//EN" >
+
+<!-- reserved for use with document profiles -->
+<!ENTITY % XHTML.profile  "" >
+
+<!-- Tell the framework to use our qualified names module as an extra qname
+driver -->
+<!ENTITY % xhtml-qname-extra.mod
+     SYSTEM "myml-qname-1.mod" >
+
+<!-- Define the Content Model for the framework to use -->
+<!ENTITY % xhtml-model.mod
+	 SYSTEM "myml-model-1.mod" >
+
+<!-- Disable bidirectional text support -->
+<!ENTITY % XHTML.bidi  "IGNORE" >
+
+<!-- Bring in the XHTML Framework -->
+<!ENTITY % xhtml-framework.mod
+     PUBLIC "-//W3C//ENTITIES XHTML Modular Framework 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-framework-1.mod" >
+%xhtml-framework.mod;
+
+<!-- Basic Text Module (Required)  ............................... -->
+<!ENTITY % xhtml-text.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Basic Text 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-text-1.mod" >
+%xhtml-text.mod;
+
+<!-- Hypertext Module (required) ................................. -->
+<!ENTITY % xhtml-hypertext.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Hypertext 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-hypertext-1.mod" >
+%xhtml-hypertext.mod;
+
+<!-- Lists Module (required)  .................................... -->
+<!ENTITY % xhtml-list.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Lists 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-list-1.mod" >
+%xhtml-list.mod;
+
+<!-- My Elements Module   ........................................ -->
+<!ENTITY % MyML-elements.mod
+     SYSTEM "myml-elements-1.mod" >
+%MyML-elements.mod;
+
+<!-- XHTML Images module  ........................................ -->
+<!ENTITY % xhtml-image.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Images 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-image-1.mod" >
+%xhtml-image.mod;
+
+<!-- Document Metainformation Module  ............................ -->
+<!ENTITY % xhtml-meta.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Metainformation 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-meta-1.mod" >
+%xhtml-meta.mod;
+
+<!-- Document Structure Module (required)  ....................... -->
+<!ENTITY % xhtml-struct.mod
+     PUBLIC "-//W3C//ELEMENTS XHTML Document Structure 1.0//EN"
+            "http://www.w3.org/TR/xhtml-modularization/DTD/xhtml-struct-1.mod" >
+%xhtml-struct.mod;

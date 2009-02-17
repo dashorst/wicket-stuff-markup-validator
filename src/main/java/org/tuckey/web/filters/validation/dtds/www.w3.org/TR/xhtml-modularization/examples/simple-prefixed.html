@@ -1,0 +1,17 @@
+<!DOCTYPE html SYSTEM "simpleml-1_0.dtd" [
+  <!ENTITY % SimpleML.prefixed "INCLUDE">
+]>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:simpleml="http://www.example.com/xmlns/simpleml1" >
+<head>
+<title>An example using defaults</title>
+</head>
+<body>
+<p>This is content in the XHTML namespace</p>
+<simpleml:element>
+  This is content in the SimpleML namespace.
+  <simpleml:otherelement />
+</simpleml:element>
+<p><img src="missing" alt="Missing image" simpleml:myattr="value"/></p>
+</body>
+</html>
