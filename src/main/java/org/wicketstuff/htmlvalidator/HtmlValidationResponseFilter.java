@@ -6,8 +6,6 @@ import java.io.IOException;
 import org.apache.wicket.IResponseFilter;
 import org.apache.wicket.Page;
 import org.apache.wicket.RequestCycle;
-import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.apache.wicket.util.string.AppendingStringBuffer;
 import org.tuckey.web.filters.validation.ValidationHandler;
 import org.tuckey.web.filters.validation.generated.GeneratedValidationReport;
@@ -42,7 +40,8 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 	}
 
 	private boolean isXHtml(AppendingStringBuffer response) {
-		String contentSoFar = response.substring(0, 128);
+		int maxLength = Math.min(response.length(), 128);
+		String contentSoFar = response.substring(0, maxLength);
 		return contentSoFar.indexOf("<!DOCTYPE") != -1
 				&& contentSoFar.indexOf("-//W3C//DTD XHTML") != -1;
 	}
