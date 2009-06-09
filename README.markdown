@@ -53,7 +53,7 @@ mvn install and include the following in your project's pom:
 	<dependency>
 	    <groupId>org.wicketstuff</groupId>
 	    <artifactId>htmlvalidator</artifactId>
-	    <version>1.1</version>
+	    <version>1.2</version>
 	    <scope>test</scope>
 	</dependency>
 
