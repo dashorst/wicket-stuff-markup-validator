@@ -21,7 +21,7 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 		Page responsePage = RequestCycle.get().getResponsePage();
 		
 		// when the responsepage is an error page, don't filter the page
-		if (responsePage.isErrorPage()) {
+		if (responsePage == null || responsePage.isErrorPage()) {
 			return responseBuffer;
 		}
 
