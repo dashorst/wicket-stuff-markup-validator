@@ -4,7 +4,7 @@
 	<groupId>org.wicketstuff</groupId>
 	<artifactId>htmlvalidator</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1</version>
 	<!-- TODO project name  -->
 	<name>HTML Validator</name>
 	<description>
