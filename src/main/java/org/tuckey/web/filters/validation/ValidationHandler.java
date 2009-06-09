@@ -178,7 +178,7 @@ public class ValidationHandler extends DefaultHandler {
 
     }
 
-    private static boolean isFalseError(LineIssue lineIssue) {
+    protected boolean isFalseError(LineIssue lineIssue) {
         if (lineIssue == null) return false;
         String message = lineIssue.getMessage();
         if (message == null) return false;
