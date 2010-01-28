@@ -30,7 +30,7 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 		if (isXHtml(responseBuffer)) {
 			if (isIgnoreKnownWicketBugs()) {
 				response = response.replaceAll("&wicket:ignoreIfNotActive",
-						"&amp;wicket:ignoreIfNotActive");
+						"&amp;wicket:ignoreIfNotActive").replaceAll("&&", "&amp;&amp;");
 			}
 			try {
 				ValidationHandler handler = new ValidationHandler(response, "") {
