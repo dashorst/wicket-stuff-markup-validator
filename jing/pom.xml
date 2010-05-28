@@ -24,21 +24,24 @@
 	</licenses>
 	<dependencies>
 		<dependency>
-			<groupId>org.wicketstuff.htmlvalidator</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>isorelax</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xmlParserApis</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>saxon</groupId>
 			<artifactId>saxon</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>saxon</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>xml-resolver</groupId>
+			<artifactId>xml-resolver</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>xalan</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
