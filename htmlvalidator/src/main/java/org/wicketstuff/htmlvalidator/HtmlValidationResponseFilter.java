@@ -1,6 +1,11 @@
 package org.wicketstuff.htmlvalidator;
 
 import java.io.IOException;
+import java.io.StringReader;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.wicket.IResponseFilter;
 import org.apache.wicket.Page;
@@ -9,6 +14,7 @@ import org.apache.wicket.util.string.AppendingStringBuffer;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 import com.thaiopensource.util.PropertyMapBuilder;
 import com.thaiopensource.validate.IncorrectSchemaException;
@@ -51,9 +57,12 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 							public InputSource resolveEntity(String publicId,
 									String systemId) throws SAXException,
 									IOException {
-								int indexOfValidator = systemId.lastIndexOf("htmlvalidator");
+								System.out.println(systemId);
+								int indexOfValidator = systemId
+										.lastIndexOf("htmlvalidator");
 								if (indexOfValidator != -1)
-									systemId = systemId.substring(indexOfValidator+14);
+									systemId = systemId
+											.substring(indexOfValidator + 14);
 								return new InputSource(
 										HtmlValidationResponseFilter.class
 												.getResourceAsStream("/schemas/xhtml10/"
@@ -62,13 +71,24 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 						});
 				Schema schema = new AutoSchemaReader().createSchema(xhtml10In,
 						properties.toPropertyMap());
+
 				properties = new PropertyMapBuilder();
-				Validator validator = schema.createValidator(properties.toPropertyMap());
+				Validator validator = schema.createValidator(properties
+						.toPropertyMap());
+
+				SAXParserFactory factory = SAXParserFactory.newInstance();
+				factory.setValidating(false);
+				SAXParser parser = factory.newSAXParser();
+				XMLReader reader = parser.getXMLReader();
+				reader.setContentHandler(validator.getContentHandler());
+				reader.parse(new InputSource(new StringReader(response)));
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (SAXException e) {
 				e.printStackTrace();
 			} catch (IncorrectSchemaException e) {
+				e.printStackTrace();
+			} catch (ParserConfigurationException e) {
 				e.printStackTrace();
 			}
 
