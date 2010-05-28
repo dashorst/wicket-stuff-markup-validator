@@ -22,6 +22,10 @@
 			<name>BSD License</name>
 			<distribution>repo</distribution>
 		</license>
+		<license>
+			<name>MIT License</name>
+			<distribution>repo</distribution>
+		</license>
 	</licenses>
 	<scm>
 		<developerConnection>scm:git:git://github.com/dashorst/wicket-stuff-markup-validator.git</developerConnection>
