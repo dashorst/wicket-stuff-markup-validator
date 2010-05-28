@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>XHTML Validator Test Application</title>
+</head>
+<body>
+	<h1>XHTML Validator Test Application</h1>
+	<p>
+		This test application showcases the <a href="http://tuckey.org/validation" target="_blank">XHTML Validator</a>
+		integration with <a href="http://wicket.apache.org" target="_blank">Apache Wicket</a>. This project contains
+		GPL licensed code, and is licensed under the Gnu Public License.
+	</p>
+	<p>
+		The Invalid XHTML page will render the error page that shows which parts of the response page are invalid XHTML.
+	</p>
+	<wicket:link>
+		<ul>
+			<li><a href="ValidXHtmlPage.html">Valid XHTML</a></li>
+			<li><a href="InvalidXHtmlPage.html">Invalid XHTML</a></li>
+		</ul>
+	</wicket:link>
+	
+	<wicket:child />
+</body>
+</html>
+
