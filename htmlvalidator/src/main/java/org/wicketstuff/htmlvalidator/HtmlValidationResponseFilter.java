@@ -6,16 +6,25 @@ import java.io.StringReader;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
 
 import org.apache.wicket.IResponseFilter;
 import org.apache.wicket.Page;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.util.string.AppendingStringBuffer;
 import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
+import com.thaiopensource.resolver.Identifier;
+import com.thaiopensource.resolver.Input;
+import com.thaiopensource.resolver.Resolver;
+import com.thaiopensource.resolver.ResolverException;
 import com.thaiopensource.util.PropertyMapBuilder;
 import com.thaiopensource.validate.IncorrectSchemaException;
 import com.thaiopensource.validate.Schema;
@@ -23,72 +32,106 @@ import com.thaiopensource.validate.ValidateProperty;
 import com.thaiopensource.validate.Validator;
 import com.thaiopensource.validate.auto.AutoSchemaReader;
 
-public class HtmlValidationResponseFilter implements IResponseFilter {
+public class HtmlValidationResponseFilter implements IResponseFilter
+{
 
 	private boolean ignoreKnownWicketBugs;
 
 	private boolean ignoreAutocomplete;
 
-	public AppendingStringBuffer filter(AppendingStringBuffer responseBuffer) {
+	public AppendingStringBuffer filter(AppendingStringBuffer responseBuffer)
+	{
 		Page responsePage = RequestCycle.get().getResponsePage();
 
 		// when the responsepage is an error page, don't filter the page
-		if (responsePage == null || responsePage.isErrorPage()) {
+		if (responsePage == null || responsePage.isErrorPage())
+		{
 			return responseBuffer;
 		}
 
 		String response = responseBuffer.toString();
 
-		if (isXHtml(responseBuffer)) {
-			if (isIgnoreKnownWicketBugs()) {
-				response = response.replaceAll("&wicket:ignoreIfNotActive",
-						"&amp;wicket:ignoreIfNotActive").replaceAll("&&",
-						"&amp;&amp;");
+		if (isXHtml(responseBuffer))
+		{
+			if (isIgnoreKnownWicketBugs())
+			{
+				response =
+					response.replaceAll("&wicket:ignoreIfNotActive",
+						"&amp;wicket:ignoreIfNotActive").replaceAll("&&", "&amp;&amp;");
 			}
-			InputSource xhtml10In = new InputSource(
-					HtmlValidationResponseFilter.class
-							.getResourceAsStream("/schemas/xhtml10/xhtml.rng"));
-			try {
+			InputSource xhtml10In =
+				new InputSource(HtmlValidationResponseFilter.class
+					.getResourceAsStream("/schemas/xhtml10/xhtml.rng"));
+			try
+			{
 				PropertyMapBuilder properties = new PropertyMapBuilder();
-				properties.put(ValidateProperty.ENTITY_RESOLVER,
-						new EntityResolver() {
+				properties.put(ValidateProperty.ENTITY_RESOLVER, new EntityResolver()
+				{
 
-							@Override
-							public InputSource resolveEntity(String publicId,
-									String systemId) throws SAXException,
-									IOException {
-								System.out.println(systemId);
-								int indexOfValidator = systemId
-										.lastIndexOf("htmlvalidator");
-								if (indexOfValidator != -1)
-									systemId = systemId
-											.substring(indexOfValidator + 14);
-								return new InputSource(
-										HtmlValidationResponseFilter.class
-												.getResourceAsStream("/schemas/xhtml10/"
-														+ systemId));
-							}
-						});
-				Schema schema = new AutoSchemaReader().createSchema(xhtml10In,
-						properties.toPropertyMap());
+					@Override
+					public InputSource resolveEntity(String publicId, String systemId)
+							throws SAXException, IOException
+					{
+						int indexOfValidator = systemId.lastIndexOf("htmlvalidator");
+						if (indexOfValidator != -1)
+							systemId = systemId.substring(indexOfValidator + 14);
+						return new InputSource(HtmlValidationResponseFilter.class
+							.getResourceAsStream("/schemas/xhtml10/" + systemId));
+					}
+				});
+				Schema schema =
+					new AutoSchemaReader().createSchema(xhtml10In, properties.toPropertyMap());
 
 				properties = new PropertyMapBuilder();
-				Validator validator = schema.createValidator(properties
-						.toPropertyMap());
+				properties.put(ValidateProperty.ERROR_HANDLER, new ErrorHandler()
+				{
+					@Override
+					public void warning(SAXParseException arg0) throws SAXException
+					{
+						System.out.println(arg0.getMessage());
+					}
+
+					@Override
+					public void fatalError(SAXParseException arg0) throws SAXException
+					{
+						System.out.println(arg0.getMessage());
+					}
+
+					@Override
+					public void error(SAXParseException arg0) throws SAXException
+					{
+						System.out.println(arg0.getMessage());
+					}
+				});
+				Validator validator = schema.createValidator(properties.toPropertyMap());
 
 				SAXParserFactory factory = SAXParserFactory.newInstance();
+				factory.setNamespaceAware(true);
 				factory.setValidating(false);
 				SAXParser parser = factory.newSAXParser();
 				XMLReader reader = parser.getXMLReader();
+				reader.setFeature("http://xml.org/sax/features/string-interning", true);
+				reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+				reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+				reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",
+					false);
 				reader.setContentHandler(validator.getContentHandler());
 				reader.parse(new InputSource(new StringReader(response)));
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				e.printStackTrace();
-			} catch (SAXException e) {
+			}
+			catch (SAXException e)
+			{
 				e.printStackTrace();
-			} catch (IncorrectSchemaException e) {
+			}
+			catch (IncorrectSchemaException e)
+			{
 				e.printStackTrace();
-			} catch (ParserConfigurationException e) {
+			}
+			catch (ParserConfigurationException e)
+			{
 				e.printStackTrace();
 			}
 
@@ -119,19 +162,23 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 		return responseBuffer;
 	}
 
-	public void setIgnoreAutocomplete(boolean ignoreAutocomplete) {
+	public void setIgnoreAutocomplete(boolean ignoreAutocomplete)
+	{
 		this.ignoreAutocomplete = ignoreAutocomplete;
 	}
 
-	public boolean isIgnoreAutocomplete() {
+	public boolean isIgnoreAutocomplete()
+	{
 		return ignoreAutocomplete;
 	}
 
-	public void setIgnoreKnownWicketBugs(boolean ignoreKnownWicketBugs) {
+	public void setIgnoreKnownWicketBugs(boolean ignoreKnownWicketBugs)
+	{
 		this.ignoreKnownWicketBugs = ignoreKnownWicketBugs;
 	}
 
-	public boolean isIgnoreKnownWicketBugs() {
+	public boolean isIgnoreKnownWicketBugs()
+	{
 		return ignoreKnownWicketBugs;
 	}
 
@@ -157,10 +204,11 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 	// .equals(lineIssue.getMessage());
 	// }
 
-	private boolean isXHtml(AppendingStringBuffer response) {
+	private boolean isXHtml(AppendingStringBuffer response)
+	{
 		int maxLength = Math.min(response.length(), 128);
 		String contentSoFar = response.substring(0, maxLength);
 		return contentSoFar.indexOf("<!DOCTYPE") != -1
-				&& contentSoFar.indexOf("-//W3C//DTD XHTML") != -1;
+			&& contentSoFar.indexOf("-//W3C//DTD XHTML") != -1;
 	}
 }
