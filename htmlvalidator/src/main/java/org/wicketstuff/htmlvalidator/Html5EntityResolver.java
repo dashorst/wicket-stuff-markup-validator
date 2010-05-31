@@ -11,7 +11,7 @@ public class Html5EntityResolver implements EntityResolver
 		int indexOfValidator = systemId.lastIndexOf("htmlvalidator");
 		if (indexOfValidator != -1)
 			systemId = systemId.substring(indexOfValidator + 14);
-		return new InputSource(HtmlValidationResponseFilter.class
-			.getResourceAsStream("/schemas/html5/" + systemId));
+		return new InputSource(HtmlValidationResponseFilter.class.getResourceAsStream("/relaxng/"
+			+ systemId));
 	}
 }

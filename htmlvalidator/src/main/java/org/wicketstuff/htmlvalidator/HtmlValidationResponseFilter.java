@@ -6,8 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.wicket.IResponseFilter;
 import org.apache.wicket.Page;
@@ -75,16 +73,7 @@ public class HtmlValidationResponseFilter implements IResponseFilter
 				});
 				Validator validator = schema.createValidator(properties.toPropertyMap());
 
-				SAXParserFactory factory = SAXParserFactory.newInstance();
-				factory.setNamespaceAware(true);
-				factory.setValidating(false);
-				SAXParser parser = factory.newSAXParser();
-				XMLReader reader = parser.getXMLReader();
-				reader.setFeature("http://xml.org/sax/features/string-interning", true);
-				reader.setFeature("http://xml.org/sax/features/external-general-entities", false);
-				reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-				reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",
-					false);
+				XMLReader reader = docType.createParser();
 				reader.setContentHandler(validator.getContentHandler());
 				reader.parse(new InputSource(new StringReader(response)));
 			}

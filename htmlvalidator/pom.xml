@@ -16,6 +16,10 @@
 			<artifactId>jing</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>whattf</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>nu.validator.htmlparser</groupId>
 			<artifactId>htmlparser</artifactId>
 		</dependency>
