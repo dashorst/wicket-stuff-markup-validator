@@ -31,6 +31,14 @@ public class HtmlValidationResponseFilter implements IResponseFilter
 
 	private boolean ignoreAutocomplete;
 
+	public HtmlValidationResponseFilter()
+	{
+		System.setProperty("org.whattf.datatype.charset-registry",
+			HtmlValidationResponseFilter.class.getResource("/data/character-sets").toString());
+		System.setProperty("org.whattf.datatype.lang-registry", HtmlValidationResponseFilter.class
+			.getResource("/data/language-subtag-registry").toString());
+	}
+
 	public AppendingStringBuffer filter(AppendingStringBuffer responseBuffer)
 	{
 		Page responsePage = RequestCycle.get().getResponsePage();
