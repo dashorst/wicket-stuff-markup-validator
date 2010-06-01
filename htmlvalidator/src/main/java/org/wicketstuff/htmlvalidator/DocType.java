@@ -6,14 +6,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import nu.validator.htmlparser.common.DoctypeExpectation;
 import nu.validator.htmlparser.common.Heuristics;
 import nu.validator.htmlparser.common.XmlViolationPolicy;
 import nu.validator.htmlparser.sax.HtmlParser;
 
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 import com.thaiopensource.util.PropertyMapBuilder;
@@ -31,17 +30,7 @@ public enum DocType
 		@Override
 		public XMLReader createParser()
 		{
-			HtmlParser htmlParser = new HtmlParser();
-			htmlParser.setCommentPolicy(XmlViolationPolicy.ALLOW);
-			htmlParser.setContentNonXmlCharPolicy(XmlViolationPolicy.ALLOW);
-			htmlParser.setContentSpacePolicy(XmlViolationPolicy.ALTER_INFOSET);
-			htmlParser.setNamePolicy(XmlViolationPolicy.ALLOW);
-			htmlParser.setStreamabilityViolationPolicy(XmlViolationPolicy.FATAL);
-			htmlParser.setXmlnsPolicy(XmlViolationPolicy.ALTER_INFOSET);
-			htmlParser.setMappingLangToXmlLang(true);
-			htmlParser.setHtml4ModeCompatibleWithXhtml1Schemata(true);
-			htmlParser.setHeuristics(Heuristics.ALL);
-			return htmlParser;
+			return createHtmlParser(DoctypeExpectation.HTML);
 		}
 
 		@Override
@@ -55,26 +44,7 @@ public enum DocType
 					.getResourceAsStream("/relaxng/assertions.sch"));
 			PropertyMapBuilder properties = new PropertyMapBuilder();
 			properties.put(ValidateProperty.ENTITY_RESOLVER, new Html5EntityResolver());
-			properties.put(ValidateProperty.ERROR_HANDLER, new ErrorHandler()
-			{
-				@Override
-				public void warning(SAXParseException exception) throws SAXException
-				{
-					System.err.println(exception.getMessage());
-				}
-
-				@Override
-				public void fatalError(SAXParseException exception) throws SAXException
-				{
-					System.err.println(exception.getMessage());
-				}
-
-				@Override
-				public void error(SAXParseException exception) throws SAXException
-				{
-					System.err.println(exception.getMessage());
-				}
-			});
+			properties.put(ValidateProperty.ERROR_HANDLER, new DebugErrorHandler());
 			Schema base =
 				CompactSchemaReader.getInstance().createSchema(html5In, properties.toPropertyMap());
 			Schema assertions =
@@ -125,8 +95,7 @@ public enum DocType
 		@Override
 		public XMLReader createParser()
 		{
-			// TODO Auto-generated method stub
-			return null;
+			return createHtmlParser(DoctypeExpectation.HTML401_STRICT);
 		}
 
 		@Override
@@ -140,8 +109,7 @@ public enum DocType
 		@Override
 		public XMLReader createParser()
 		{
-			// TODO Auto-generated method stub
-			return null;
+			return createHtmlParser(DoctypeExpectation.HTML401_TRANSITIONAL);
 		}
 
 		@Override
@@ -196,6 +164,22 @@ public enum DocType
 	public String getIdentifier()
 	{
 		return identifier;
+	}
+
+	private static HtmlParser createHtmlParser(DoctypeExpectation docTypeExpectation)
+	{
+		HtmlParser htmlParser = new HtmlParser();
+		htmlParser.setCommentPolicy(XmlViolationPolicy.ALLOW);
+		htmlParser.setContentNonXmlCharPolicy(XmlViolationPolicy.ALLOW);
+		htmlParser.setContentSpacePolicy(XmlViolationPolicy.ALTER_INFOSET);
+		htmlParser.setNamePolicy(XmlViolationPolicy.ALLOW);
+		htmlParser.setStreamabilityViolationPolicy(XmlViolationPolicy.FATAL);
+		htmlParser.setXmlnsPolicy(XmlViolationPolicy.ALTER_INFOSET);
+		htmlParser.setMappingLangToXmlLang(true);
+		htmlParser.setHtml4ModeCompatibleWithXhtml1Schemata(true);
+		htmlParser.setHeuristics(Heuristics.ALL);
+		htmlParser.setDoctypeExpectation(docTypeExpectation);
+		return htmlParser;
 	}
 
 	private static XMLReader createXmlParser() throws ParserConfigurationException, SAXException
