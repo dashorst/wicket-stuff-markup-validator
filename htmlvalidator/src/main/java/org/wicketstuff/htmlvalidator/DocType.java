@@ -63,12 +63,7 @@ public enum DocType
 		@Override
 		public Schema createSchema() throws IOException, SAXException, IncorrectSchemaException
 		{
-			InputSource xhtml10In =
-				new InputSource(HtmlValidationResponseFilter.class
-					.getResourceAsStream("/schemas/xhtml10/xhtml-strict.rng"));
-			PropertyMapBuilder properties = new PropertyMapBuilder();
-			properties.put(ValidateProperty.ENTITY_RESOLVER, new XHtmlEntityResolver());
-			return new AutoSchemaReader().createSchema(xhtml10In, properties.toPropertyMap());
+			return createXHtml10Schema("/schemas/xhtml10/xhtml-strict.rng");
 		}
 	},
 	XHTML10_TRANSITIONAL("-//W3C//DTD XHTML 1.0 Transitional//EN")
@@ -82,12 +77,7 @@ public enum DocType
 		@Override
 		public Schema createSchema() throws IOException, SAXException, IncorrectSchemaException
 		{
-			InputSource xhtml10In =
-				new InputSource(HtmlValidationResponseFilter.class
-					.getResourceAsStream("/schemas/xhtml10/xhtml.rng"));
-			PropertyMapBuilder properties = new PropertyMapBuilder();
-			properties.put(ValidateProperty.ENTITY_RESOLVER, new XHtmlEntityResolver());
-			return new AutoSchemaReader().createSchema(xhtml10In, properties.toPropertyMap());
+			return createXHtml10Schema("/schemas/xhtml10/xhtml.rng");
 		}
 	},
 	HTML401_STRICT("-//W3C//DTD HTML 4.01//EN")
@@ -101,7 +91,7 @@ public enum DocType
 		@Override
 		public Schema createSchema() throws IOException, SAXException, IncorrectSchemaException
 		{
-			return null;
+			return createXHtml10Schema("/schemas/xhtml10/xhtml-strict.rng");
 		}
 	},
 	HTML401_TRANSITIONAL("-//W3C//DTD HTML 4.01 Transitional//EN")
@@ -115,37 +105,7 @@ public enum DocType
 		@Override
 		public Schema createSchema() throws IOException, SAXException, IncorrectSchemaException
 		{
-			return null;
-		}
-	},
-	HTML40_STRICT("-//W3C//DTD HTML 4.0//EN")
-	{
-		@Override
-		public XMLReader createParser()
-		{
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Schema createSchema() throws IOException, SAXException, IncorrectSchemaException
-		{
-			return null;
-		}
-	},
-	HTML40_TRANSITIONAL("-//W3C//DTD HTML 4.0 Transitional//EN")
-	{
-		@Override
-		public XMLReader createParser()
-		{
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Schema createSchema() throws IOException, SAXException, IncorrectSchemaException
-		{
-			return null;
+			return createXHtml10Schema("/schemas/xhtml10/xhtml.rng");
 		}
 	};
 
@@ -164,6 +124,16 @@ public enum DocType
 	public String getIdentifier()
 	{
 		return identifier;
+	}
+
+	private static Schema createXHtml10Schema(String schema) throws IOException, SAXException,
+			IncorrectSchemaException
+	{
+		InputSource xhtml10In =
+			new InputSource(HtmlValidationResponseFilter.class.getResourceAsStream(schema));
+		PropertyMapBuilder properties = new PropertyMapBuilder();
+		properties.put(ValidateProperty.ENTITY_RESOLVER, new XHtmlEntityResolver());
+		return new AutoSchemaReader().createSchema(xhtml10In, properties.toPropertyMap());
 	}
 
 	private static HtmlParser createHtmlParser(DoctypeExpectation docTypeExpectation)
