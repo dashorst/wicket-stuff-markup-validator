@@ -11,10 +11,8 @@ import org.apache.wicket.IResponseFilter;
 import org.apache.wicket.Page;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.util.string.AppendingStringBuffer;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 import com.thaiopensource.util.PropertyMapBuilder;
@@ -57,33 +55,16 @@ public class HtmlValidationResponseFilter implements IResponseFilter
 			try
 			{
 				Schema schema = docType.createSchema();
+				ValidationReport report = new ValidationReport();
 
 				PropertyMapBuilder properties = new PropertyMapBuilder();
-				properties.put(ValidateProperty.ERROR_HANDLER, new ErrorHandler()
-				{
-					@Override
-					public void warning(SAXParseException arg0) throws SAXException
-					{
-						System.out.println(arg0.getMessage());
-					}
-
-					@Override
-					public void fatalError(SAXParseException arg0) throws SAXException
-					{
-						System.out.println(arg0.getMessage());
-					}
-
-					@Override
-					public void error(SAXParseException arg0) throws SAXException
-					{
-						System.out.println(arg0.getMessage());
-					}
-				});
+				properties.put(ValidateProperty.ERROR_HANDLER, report);
 				Validator validator = schema.createValidator(properties.toPropertyMap());
 
 				XMLReader reader = docType.createParser();
 				reader.setContentHandler(validator.getContentHandler());
 				reader.parse(new InputSource(new StringReader(response)));
+				insertMarkup(responseBuffer, report);
 			}
 			catch (IOException e)
 			{
@@ -130,22 +111,6 @@ public class HtmlValidationResponseFilter implements IResponseFilter
 	// "Attribute &quot;autocomplete&quot; must be declared for element type &quot;input&quot;."
 	// .equals(lineIssue.getMessage());
 	// }
-	//
-	// private boolean isKnownWicketBug(LineIssue lineIssue) {
-	// return isWicket2033(lineIssue) || isWicket2316(lineIssue);
-	// }
-	//
-	// private boolean isWicket2033(LineIssue lineIssue) {
-	// return
-	// "The reference to entity &quot;wicket:ignoreIfNotActive&quot; must end with the ';' delimiter."
-	// .equals(lineIssue.getMessage());
-	// }
-	//
-	// private boolean isWicket2316(LineIssue lineIssue) {
-	// return
-	// "The entity name must immediately follow the '&amp;' in the entity reference."
-	// .equals(lineIssue.getMessage());
-	// }
 
 	private String getDocType(AppendingStringBuffer response)
 	{
@@ -157,5 +122,20 @@ public class HtmlValidationResponseFilter implements IResponseFilter
 			return null;
 
 		return matcher.group();
+	}
+
+	private void insertMarkup(AppendingStringBuffer original, ValidationReport report)
+	{
+		if (report.isValid())
+			return;
+
+		String head = report.getHeadMarkup();
+		String body = report.getBodyMarkup();
+
+		int indexOfHeadClose = original.lastIndexOf("</head>");
+		original.insert(indexOfHeadClose, head);
+
+		int indexOfBodyClose = original.lastIndexOf("</body>");
+		original.insert(indexOfBodyClose, body);
 	}
 }
