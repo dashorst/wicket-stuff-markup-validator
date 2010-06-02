@@ -1,13 +1,58 @@
 div.validation-report {
+	position:fixed;
+	top : 0;
+	left : 0;
+	right : 0;
+	bottom : 0;
+	background : white;
+	border : 2px solid red;
+	overflow : auto;
 }
-div.validation-report tr {
+div.validation-report pre {
+	font-family : "Andale Mono", fixed;
+	font-size : 10pt;
+}
+div.validation-report thead {
+	text-align : left;
+	background-color : #e8e8e8;
+	margin : 0;padding:0;
+}
+div.validation-report thead tr {
+	margin : 0;padding:0;
+}
+div.validation-report thead ul {
+	margin : 0;padding : 0;
+	list-style  : none;
+}
+div.validation-report thead li {
+	margin : 0; padding : 0 1em;
+	display : inline;
+	border-left : 1px solid #ccc;
+}
+div.validation-report thead li:first {
+	border:none;
+}
+div.validation-report tbody {
+	margin : 0;
+	padding : 0;
+}
+div.validation-report tbody tr {
 	vertical-align : top;
+}
+div.validation-report span:hover {
+	background-color : #ff0;
 }
 div.validation-report pre.linenrs {
 	text-align : right;
+	background-color : #e8e8e8;
+	padding : 0 5px;
 }
-div.validation-report pre.lines div {
-	display:inline;
+div.validation-report pre.lines {
+	padding : 0 5px;
+}
+div.validation-report pre.lines span {
+	width:100%;
+	display:block;
 }
 div.validation-report pre.lines .error {
 	color : red;

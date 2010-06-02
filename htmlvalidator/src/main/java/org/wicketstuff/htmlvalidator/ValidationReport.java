@@ -1,11 +1,13 @@
 package org.wicketstuff.htmlvalidator;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ResourceReference;
+import org.apache.wicket.protocol.http.WebRequestCycle;
+import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.string.Strings;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
@@ -13,10 +15,25 @@ import org.xml.sax.SAXParseException;
 public class ValidationReport implements ErrorHandler {
 	private List<SAXParseException> parseErrors = new ArrayList<SAXParseException>();
 
-	private String[] markup;
+	private String markup;
+	private String[] lines;
+
+	private String page;
 
 	public ValidationReport(String markup) {
-		this.markup = Strings.split(markup, '\n');
+		RequestCycle requestCycle = WebRequestCycle.get();
+		Class<? extends Page> pageClass = requestCycle.getResponsePageClass();
+		Page page = requestCycle.getResponsePage();
+		if (pageClass != null) {
+			this.page = pageClass.getName();
+		} else if (page != null) {
+			this.page = page.getClass().getName();
+		} else {
+			this.page = "Unknown page";
+		}
+
+		this.markup = markup;
+		this.lines = Strings.split(markup, '\n');
 	}
 
 	@Override
@@ -47,19 +64,15 @@ public class ValidationReport implements ErrorHandler {
 
 	public String getBodyMarkup() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<div class=\"validation-report\">");
+		sb.append("<div id=\"validationreportwindow\" class=\"validation-report\">");
+		sb.append("<a href=\"#\" onclick=\"document.getElementById('validationreportwindow').style.display='none';\">Close</a>");
 		generateErrorList(sb);
+		generateSourceView(sb);
 		sb.append("</div>");
 		return sb.toString();
 	}
 
 	private void generateErrorList(StringBuilder sb) {
-		sb.append("<table>");
-		sb.append("<tr>");
-		generateLineNrs(sb);
-		generateLines(sb);
-		sb.append("</tr>");
-		sb.append("</table>");
 		sb.append("<ul>\n");
 		for (SAXParseException curError : parseErrors) {
 			generateErrorItem(sb, curError);
@@ -67,12 +80,34 @@ public class ValidationReport implements ErrorHandler {
 		sb.append("</ul>\n");
 	}
 
+	private void generateSourceView(StringBuilder sb) {
+		sb.append("<table cellpadding='0' cellspacing='0'>");
+		sb.append("<thead>");
+		sb.append("<tr><th colspan=\"2\">");
+		sb.append("<ul>");
+		sb.append("<li>");
+		sb.append(page);
+		sb.append("</li>");
+		sb.append("<li>");
+		sb.append(lines.length);
+		sb.append(" lines</li>");
+		sb.append("<li>");
+		sb.append(Bytes.bytes(markup.length()).toString());
+		sb.append("</li>");
+		sb.append("</th></tr></thead>\n");
+		sb.append("<tbody><tr>");
+		generateLineNrs(sb);
+		generateLines(sb);
+		sb.append("</tr></tbody>");
+		sb.append("</table>");
+	}
+
 	private void generateLineNrs(StringBuilder sb) {
 		sb.append("<td><pre class=\"linenrs\">");
-		for (int i = 1; i <= markup.length; i++) {
-			sb.append("<span id=\"LN" + i + "\">");
+		for (int i = 1; i <= lines.length; i++) {
+			sb.append("<a name=\"LN" + i + "\">");
 			sb.append(i);
-			sb.append("</span>");
+			sb.append("</a>");
 			sb.append("\n");
 		}
 		sb.append("</pre></td>\n");
@@ -80,12 +115,10 @@ public class ValidationReport implements ErrorHandler {
 
 	private void generateLines(StringBuilder sb) {
 		sb.append("<td><pre class=\"lines\">");
-		for (int i = 1; i <= markup.length; i++) {
-			String line = markup[i - 1];
+		for (int i = 1; i <= lines.length; i++) {
+			String line = lines[i - 1];
 
-			sb.append("<div id=\"LC");
-			sb.append(i);
-			sb.append("\"");
+			sb.append("<span ");
 			if (hasError(i)) {
 				sb.append(" class=\"error\"");
 				sb.append(" title=\"");
@@ -94,7 +127,9 @@ public class ValidationReport implements ErrorHandler {
 			}
 			sb.append(">");
 			sb.append(Strings.escapeMarkup(line));
-			sb.append("</div>\n");
+			if (line.isEmpty())
+				sb.append("\n");
+			sb.append("</span>");
 		}
 		sb.append("</pre></td>\n");
 	}
@@ -116,15 +151,20 @@ public class ValidationReport implements ErrorHandler {
 	}
 
 	private void generateErrorItem(StringBuilder sb, SAXParseException error) {
-		sb.append("<li><span class=\"position\">");
-		if (error.getLineNumber() == -1 && error.getColumnNumber() == -1) {
-			sb.append("-");
-		} else {
-			sb.append(error.getLineNumber());
-			sb.append(":");
-			sb.append(error.getColumnNumber());
+		sb.append("<li>");
+		if (error.getLineNumber() != -1) {
+			sb.append("<a href=\"#LN" + error.getLineNumber()
+					+ "\" class=\"position\">");
+			if (error.getLineNumber() == -1 && error.getColumnNumber() == -1) {
+				sb.append("-");
+			} else {
+				sb.append(error.getLineNumber());
+				sb.append(":");
+				sb.append(error.getColumnNumber());
+			}
+			sb.append("</a> ");
 		}
-		sb.append("</span> <span class=\"message\">");
+		sb.append("<span class=\"message\">");
 		sb.append(error.getLocalizedMessage());
 		sb.append("</span></li>\n");
 	}
