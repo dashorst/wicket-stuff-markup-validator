@@ -1,2 +1,14 @@
 div.validation-report {
 }
+div.validation-report tr {
+	vertical-align : top;
+}
+div.validation-report pre.linenrs {
+	text-align : right;
+}
+div.validation-report pre.lines div {
+	display:inline;
+}
+div.validation-report pre.lines .error {
+	color : red;
+}

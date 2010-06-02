@@ -55,7 +55,7 @@ public class HtmlValidationResponseFilter implements IResponseFilter
 			try
 			{
 				Schema schema = docType.createSchema();
-				ValidationReport report = new ValidationReport();
+				ValidationReport report = new ValidationReport(response);
 
 				PropertyMapBuilder properties = new PropertyMapBuilder();
 				properties.put(ValidateProperty.ERROR_HANDLER, report);
