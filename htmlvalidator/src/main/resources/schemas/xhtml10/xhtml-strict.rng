@@ -20,11 +20,9 @@
 <include href="modules/pres.rng"/>
 <include href="modules/edit.rng"/>
 <include href="modules/applet.rng"/>
-<!-- <include href="modules/basic-form.rng"/> -->
 <include href="modules/form.rng"/>
 <include href="modules/style.rng"/>
 <include href="modules/script.rng"/>
-<!-- <include href="modules/basic-table.rng"/> -->
 <include href="modules/table.rng"/>
 <include href="modules/csismap.rng"/>
 <include href="modules/events.rng"/>

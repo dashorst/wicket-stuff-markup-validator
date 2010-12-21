@@ -13,6 +13,7 @@ import org.apache.wicket.RequestCycle;
 import org.apache.wicket.util.string.AppendingStringBuffer;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 import com.thaiopensource.util.PropertyMapBuilder;
@@ -21,88 +22,78 @@ import com.thaiopensource.validate.Schema;
 import com.thaiopensource.validate.ValidateProperty;
 import com.thaiopensource.validate.Validator;
 
-public class HtmlValidationResponseFilter implements IResponseFilter
-{
-	private static final Pattern DOCTYPE_PATTERN = Pattern.compile("<!DOCTYPE[^>]*>");
+public class HtmlValidationResponseFilter implements IResponseFilter {
+	private static final Pattern DOCTYPE_PATTERN = Pattern
+			.compile("<!DOCTYPE[^>]*>");
 
 	private boolean ignoreKnownWicketBugs;
 
 	private boolean ignoreAutocomplete;
 
-	public HtmlValidationResponseFilter()
-	{
+	public HtmlValidationResponseFilter() {
 		System.setProperty("org.whattf.datatype.charset-registry",
-			HtmlValidationResponseFilter.class.getResource("/data/character-sets").toString());
-		System.setProperty("org.whattf.datatype.lang-registry", HtmlValidationResponseFilter.class
-			.getResource("/data/language-subtag-registry").toString());
+				HtmlValidationResponseFilter.class.getResource(
+						"/data/character-sets").toString());
+		System.setProperty("org.whattf.datatype.lang-registry",
+				HtmlValidationResponseFilter.class.getResource(
+						"/data/language-subtag-registry").toString());
 	}
 
-	public AppendingStringBuffer filter(AppendingStringBuffer responseBuffer)
-	{
+	public AppendingStringBuffer filter(AppendingStringBuffer responseBuffer) {
 		Page responsePage = RequestCycle.get().getResponsePage();
 
 		// when the responsepage is an error page, don't filter the page
-		if (responsePage == null || responsePage.isErrorPage())
-		{
+		if (responsePage == null || responsePage.isErrorPage()) {
 			return responseBuffer;
 		}
 
 		String docTypeStr = getDocType(responseBuffer);
-		if (docTypeStr != null)
-		{
+		if (docTypeStr != null) {
 			DocType docType = DocType.getDocType(docTypeStr);
 			String response = responseBuffer.toString();
-			try
-			{
+			try {
 				Schema schema = docType.createSchema();
 				ValidationReport report = new ValidationReport(response);
 
 				PropertyMapBuilder properties = new PropertyMapBuilder();
 				properties.put(ValidateProperty.ERROR_HANDLER, report);
-				Validator validator = schema.createValidator(properties.toPropertyMap());
+				Validator validator = schema.createValidator(properties
+						.toPropertyMap());
 
 				XMLReader reader = docType.createParser();
 				reader.setContentHandler(validator.getContentHandler());
-				reader.parse(new InputSource(new StringReader(response)));
+				try {
+					reader.parse(new InputSource(new StringReader(response)));
+				} catch (SAXParseException parseError) {
+					report.fatalError(parseError);
+				}
 				insertMarkup(responseBuffer, report);
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				e.printStackTrace();
-			}
-			catch (SAXException e)
-			{
+			} catch (SAXException e) {
 				e.printStackTrace();
-			}
-			catch (IncorrectSchemaException e)
-			{
+			} catch (IncorrectSchemaException e) {
 				e.printStackTrace();
-			}
-			catch (ParserConfigurationException e)
-			{
+			} catch (ParserConfigurationException e) {
 				e.printStackTrace();
 			}
 		}
 		return responseBuffer;
 	}
 
-	public void setIgnoreAutocomplete(boolean ignoreAutocomplete)
-	{
+	public void setIgnoreAutocomplete(boolean ignoreAutocomplete) {
 		this.ignoreAutocomplete = ignoreAutocomplete;
 	}
 
-	public boolean isIgnoreAutocomplete()
-	{
+	public boolean isIgnoreAutocomplete() {
 		return ignoreAutocomplete;
 	}
 
-	public void setIgnoreKnownWicketBugs(boolean ignoreKnownWicketBugs)
-	{
+	public void setIgnoreKnownWicketBugs(boolean ignoreKnownWicketBugs) {
 		this.ignoreKnownWicketBugs = ignoreKnownWicketBugs;
 	}
 
-	public boolean isIgnoreKnownWicketBugs()
-	{
+	public boolean isIgnoreKnownWicketBugs() {
 		return ignoreKnownWicketBugs;
 	}
 
@@ -112,8 +103,7 @@ public class HtmlValidationResponseFilter implements IResponseFilter
 	// .equals(lineIssue.getMessage());
 	// }
 
-	private String getDocType(AppendingStringBuffer response)
-	{
+	private String getDocType(AppendingStringBuffer response) {
 		int maxLength = Math.min(response.length(), 128);
 		String contentSoFar = response.substring(0, maxLength);
 
@@ -124,8 +114,8 @@ public class HtmlValidationResponseFilter implements IResponseFilter
 		return matcher.group();
 	}
 
-	private void insertMarkup(AppendingStringBuffer original, ValidationReport report)
-	{
+	private void insertMarkup(AppendingStringBuffer original,
+			ValidationReport report) {
 		if (report.isValid())
 			return;
 
