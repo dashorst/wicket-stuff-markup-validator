@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.apache.wicket.util.template.CssTemplate;
 import org.apache.wicket.util.template.JavaScriptTemplate;
-import org.apache.wicket.util.template.PackagedTextTemplate;
+import org.apache.wicket.util.template.PackageTextTemplate;
 import org.apache.wicket.util.template.TextTemplate;
 import org.tuckey.web.filters.validation.LineIssue;
 import org.tuckey.web.filters.validation.ValidationDoctype;
@@ -26,13 +26,13 @@ public class GeneratedValidationReport {
 	public ValidationHandler validationHandler;
 
 	public String getHeadMarkup() {
-		TextTemplate cssTemplate = new CssTemplate(new PackagedTextTemplate(
+		TextTemplate cssTemplate = new CssTemplate(new PackageTextTemplate(
 				GeneratedValidationReport.class,
 				"GeneratedValidationReport.css"));
 		String css = cssTemplate.asString();
 
 		TextTemplate jsTemplate = new JavaScriptTemplate(
-				new PackagedTextTemplate(GeneratedValidationReport.class,
+				new PackageTextTemplate(GeneratedValidationReport.class,
 						"GeneratedValidationReport.js"));
 		String js = jsTemplate.asString();
 		return css + "\n" + js;

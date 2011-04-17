@@ -3,9 +3,12 @@ package org.wicketstuff.htmlvalidator;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.apache.wicket.IResponseFilter;
 import org.apache.wicket.Page;
-import org.apache.wicket.RequestCycle;
+import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.component.IRequestablePage;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.handler.IPageRequestHandler;
+import org.apache.wicket.response.filter.IResponseFilter;
 import org.apache.wicket.util.string.AppendingStringBuffer;
 import org.tuckey.web.filters.validation.LineIssue;
 import org.tuckey.web.filters.validation.ValidationHandler;
@@ -18,11 +21,17 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 	private boolean ignoreAutocomplete;
 
 	public AppendingStringBuffer filter(AppendingStringBuffer responseBuffer) {
-		Page responsePage = RequestCycle.get().getResponsePage();
+		IRequestHandler requestHandler = RequestCycle.get()
+				.getActiveRequestHandler();
+		IRequestablePage responsePage = null;
+		if (requestHandler instanceof IPageRequestHandler) {
+			responsePage = ((IPageRequestHandler) requestHandler).getPage();
+		}
 
 		// when the responsepage is an error page, don't filter the page
-		if (responsePage == null || responsePage.isErrorPage()) {
-			return responseBuffer;
+		if (!(responsePage instanceof Page)
+				|| ((Page) responsePage).isErrorPage()) {
+			//return responseBuffer;
 		}
 
 		String response = responseBuffer.toString();
@@ -30,7 +39,8 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 		if (isXHtml(responseBuffer)) {
 			if (isIgnoreKnownWicketBugs()) {
 				response = response.replaceAll("&wicket:ignoreIfNotActive",
-						"&amp;wicket:ignoreIfNotActive").replaceAll("&&", "&amp;&amp;");
+						"&amp;wicket:ignoreIfNotActive").replaceAll("&&",
+						"&amp;&amp;");
 			}
 			try {
 				ValidationHandler handler = new ValidationHandler(response, "") {
@@ -42,6 +52,8 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 						if (isIgnoreAutocomplete()
 								&& isAutocompleteError(lineIssue))
 							return true;
+						if (ignoreError(lineIssue))
+							return true;
 
 						return super.isFalseError(lineIssue);
 					}
@@ -51,10 +63,8 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 					insertMarkup(responseBuffer, handler);
 				}
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -94,6 +104,10 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 	private boolean isWicket2316(LineIssue lineIssue) {
 		return "The entity name must immediately follow the '&amp;' in the entity reference."
 				.equals(lineIssue.getMessage());
+	}
+
+	protected boolean ignoreError(LineIssue lineIssue) {
+		return false;
 	}
 
 	private boolean isXHtml(AppendingStringBuffer response) {
