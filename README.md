@@ -1,14 +1,14 @@
 Wicket Stuff HTML Validator
 ===========================
 
-This validator filter is based upon the work of the validator filter created by 
-the Tuckey developers. This validator only validates XHTML based on the XHTML
-DTDs. This package is licensed under the Gnu Public License.
+This validator filter is based upon the work of the validator filter created
+by the Tuckey developers. This validator only validates XHTML based on the
+XHTML DTDs. This package is licensed under the Gnu Public License.
 
 We have provided the HTML Validator with extra settings to ignore non-DTD, but
-generally useful and accepted practises, such as the "autocomplete=false" attribute
-for text fields. We also added the ability to ignore a couple of Wicket encoding
-bugs where & characters were not converted to proper entities.
+generally useful and accepted practises, such as the "autocomplete=false"
+attribute for text fields. We also added the ability to ignore a couple of
+Wicket encoding bugs where & characters were not converted to proper entities.
 
 Usage
 -----
@@ -53,14 +53,24 @@ mvn install and include the following in your project's pom:
 	<dependency>
 	    <groupId>org.wicketstuff</groupId>
 	    <artifactId>htmlvalidator</artifactId>
-	    <version>1.3.1</version>
+	    <version>1.5-rc3</version>
 	    <scope>test</scope>
 	</dependency>
 
-If you wish to deploy the markup filter, you should change the scope to compile.
+If you wish to deploy the markup filter, you should change the scope to
+compile.
+
+The release has been published to the wicketstuff.org maven repository, found
+at:
+
+    http://wicketstuff.org/maven/repository
+
+The release artifacts can be found at this URL:
+
+    http://wicketstuff.org/maven/repository/org/wicketstuff/htmlvalidator/1.5-rc3/
 
 Examples
 --------
 For examples, start the embedded Jetty server found in src/test/java
 
-  
+and go to http://localhost:8080
