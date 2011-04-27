@@ -47,7 +47,7 @@ public class ValidationEntityResolver implements EntityResolver {
      */
     private static URL DTD_ROOT_URL = null;
     static {
-        DTD_ROOT_URL = ValidationEntityResolver.class.getResource("/org/tuckey/web/filters/validation/dtds");
+        DTD_ROOT_URL = getResource("/org/tuckey/web/filters/validation/dtds");
     }
 
     /**
@@ -58,7 +58,7 @@ public class ValidationEntityResolver implements EntityResolver {
     public ValidationEntityResolver() throws FileNotFoundException {
         if (DTD_ROOT_URL != null) return;
         // try to initialise again just in case
-        log.debug("/ is " + ValidationEntityResolver.class.getResource("/"));
+        log.debug("/ is " + getResource("/"));
         throw new FileNotFoundException("Could not find dtds folder " + DTD_ROOT_URL);
     }
 
@@ -146,8 +146,9 @@ public class ValidationEntityResolver implements EntityResolver {
     }
 
     static String convertFromFilePath(String systemId) {
-        String rootUrlStr = ValidationEntityResolver.class.getResource("/").toString();
-        if ( !systemId.startsWith("file:/")) return systemId;
+        URL rootUrl = getResource("/");
+        String rootUrlStr = (rootUrl == null) ? "" : String.valueOf(rootUrl);
+        if ( !systemId.startsWith("file:/") && !systemId.startsWith("bundle:/")) return systemId;
         int idx = systemId.indexOf(rootUrlStr);
         if ( idx != 0) return systemId;
         String entityUri = systemId.substring(rootUrlStr.length());
@@ -156,6 +157,21 @@ public class ValidationEntityResolver implements EntityResolver {
         return DTD_ROOT_URL + entityUri;
     }
 
+    /**
+     * Tries to find the given URI in the current classpath.
+     * <p>
+     * Performs the check in two stages to allow this library to be run in OSGi contexts.
+     * </p>
+     * @param aURI the URI to get as URL, cannot be <code>null</code>.
+     * @return the URL matching the given URI, can be <code>null</code>.
+     */
+    static URL getResource(final String aURI) {
+        URL result = null;
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if ( cl != null) result = cl.getResource(aURI);
+        if ( result == null) result = ValidationEntityResolver.class.getResource(aURI);
+        return result;
+    }
 
     /**
      * Cache the entity lookup.
@@ -179,5 +195,4 @@ public class ValidationEntityResolver implements EntityResolver {
     public ValidationDoctype getDoctype() {
         return doctype;
     }
-
 }
