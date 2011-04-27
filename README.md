@@ -45,10 +45,7 @@ as:
 	</body>
 	</html>
 
-Building
---------
-This project requires Apache Maven (>= 2.0.9) to be built. Just perform a
-mvn install and include the following in your project's pom:
+Include the following in your project's pom:
 
 	<dependency>
 	    <groupId>org.wicketstuff</groupId>
@@ -74,3 +71,19 @@ Examples
 For examples, start the embedded Jetty server found in src/test/java
 
 and go to http://localhost:8080
+
+Building
+--------
+
+This project requires Apache Maven (>= 2.0.9) to be built. Check out the source code from the github repository and perform a
+
+    mvn install
+
+in the root folder of your checkout. Update your project's POM using the
+SNAPSHOT GAV coordinates of the validator and follow the usage instructions.
+
+Support
+-------
+
+Either ask a question on the [Wicket user mailing list](http://wicket.apache.org/help/email.html), or create a ticket at [Github/dashorst/wicket-stuff-markup-validator](https://github.com/dashorst/wicket-stuff-markup-validator/issues).
+
