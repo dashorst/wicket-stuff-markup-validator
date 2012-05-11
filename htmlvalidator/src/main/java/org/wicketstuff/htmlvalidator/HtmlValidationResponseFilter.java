@@ -7,9 +7,12 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.wicket.IResponseFilter;
 import org.apache.wicket.Page;
-import org.apache.wicket.RequestCycle;
+import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.component.IRequestablePage;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.handler.IPageRequestHandler;
+import org.apache.wicket.response.filter.IResponseFilter;
 import org.apache.wicket.util.string.AppendingStringBuffer;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -31,19 +34,27 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 	private boolean ignoreAutocomplete;
 
 	public HtmlValidationResponseFilter() {
-		System.setProperty("org.whattf.datatype.charset-registry",
+		System.setProperty(
+				"org.whattf.datatype.charset-registry",
 				HtmlValidationResponseFilter.class.getResource(
 						"/data/character-sets").toString());
-		System.setProperty("org.whattf.datatype.lang-registry",
+		System.setProperty(
+				"org.whattf.datatype.lang-registry",
 				HtmlValidationResponseFilter.class.getResource(
 						"/data/language-subtag-registry").toString());
 	}
 
 	public AppendingStringBuffer filter(AppendingStringBuffer responseBuffer) {
-		Page responsePage = RequestCycle.get().getResponsePage();
+		IRequestHandler requestHandler = RequestCycle.get()
+				.getActiveRequestHandler();
+		IRequestablePage responsePage = null;
+		if (requestHandler instanceof IPageRequestHandler) {
+			responsePage = ((IPageRequestHandler) requestHandler).getPage();
+		}
 
 		// when the responsepage is an error page, don't filter the page
-		if (responsePage == null || responsePage.isErrorPage()) {
+		if (!(responsePage instanceof Page)
+				|| ((Page) responsePage).isErrorPage()) {
 			return responseBuffer;
 		}
 
@@ -53,7 +64,7 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 			String response = responseBuffer.toString();
 			try {
 				Schema schema = docType.createSchema();
-				ValidationReport report = new ValidationReport(response);
+				ValidationReport report = new ValidationReport(responsePage, response);
 
 				PropertyMapBuilder properties = new PropertyMapBuilder();
 				properties.put(ValidateProperty.ERROR_HANDLER, report);

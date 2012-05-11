@@ -3,10 +3,9 @@ package org.wicketstuff.htmlvalidator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.Page;
-import org.apache.wicket.RequestCycle;
-import org.apache.wicket.ResourceReference;
-import org.apache.wicket.protocol.http.WebRequestCycle;
+import org.apache.wicket.request.component.IRequestablePage;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.resource.CssResourceReference;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.string.Strings;
 import org.xml.sax.ErrorHandler;
@@ -20,18 +19,8 @@ public class ValidationReport implements ErrorHandler {
 
 	private String page;
 
-	public ValidationReport(String markup) {
-		RequestCycle requestCycle = WebRequestCycle.get();
-		Class<? extends Page> pageClass = requestCycle.getResponsePageClass();
-		Page page = requestCycle.getResponsePage();
-		if (pageClass != null) {
-			this.page = pageClass.getName();
-		} else if (page != null) {
-			this.page = page.getClass().getName();
-		} else {
-			this.page = "Unknown page";
-		}
-
+	public ValidationReport(IRequestablePage page, String markup) {
+		this.page = page.getClass().getName();
 		this.markup = markup;
 		this.lines = Strings.split(markup, '\n');
 	}
@@ -56,10 +45,12 @@ public class ValidationReport implements ErrorHandler {
 	}
 
 	public String getHeadMarkup() {
+		String cssUrl = RequestCycle
+				.get()
+				.urlFor(new CssResourceReference(ValidationReport.class,
+						"validator.css"), null).toString();
 		return "    <link rel=\"stylesheet\" type=\"text/css\" href=\""
-				+ RequestCycle.get().urlFor(
-						new ResourceReference(ValidationReport.class,
-								"validator.css")) + "\" />\n";
+				+ cssUrl + "\" />\n";
 	}
 
 	public String getBodyMarkup() {
