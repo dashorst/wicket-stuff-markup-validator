@@ -9,7 +9,7 @@ public class HtmlValidatorApplication extends WebApplication {
 	protected void init() {
 		super.init();
 		getMarkupSettings().setStripWicketTags(true);
-		getMarkupSettings().setStripXmlDeclarationFromOutput(false);
+//		getMarkupSettings().setStripXmlDeclarationFromOutput(false);
 		
 		getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
 	}
