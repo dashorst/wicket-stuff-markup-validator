@@ -21,6 +21,9 @@ namespace.
 Usage
 -----
 
+Make sure you use Wicket 1.5. This validator does not run on Wicket 1.4 or 
+earlier.
+
 Add the Wicket Stuff validator to your POM as a dependency:
 
     <dependency>
