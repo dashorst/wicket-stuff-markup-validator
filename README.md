@@ -17,3 +17,35 @@ projects required by the HTML validator code:
 Since these recent releases are not available from the central Maven
 repository, we included the sources and provide the jar files in our own
 namespace.
+
+Usage
+-----
+
+Add the Wicket Stuff validator to your POM as a dependency:
+
+    <dependency>
+        <groupId>org.wicketstuff.htmlvalidator</groupId>
+        <artifactId>htmlvalidator</artifactId>
+        <version>1.5-SNAPSHOT</version>
+    </dependency>
+
+Depending on your setup you need to use a different `scope` (for example test
+or provided to prevent the validator to be deployed to production).
+
+Add the following lines to your `Application`'s init method:
+
+    @Override
+    protected void init() {
+        super.init();
+        getMarkupSettings().setStripWicketTags(true);
+        getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
+    }
+
+You might want to put a check for the configuration of your application 
+around the addition of the response filter, to ensure that the filter doesn't run
+in production mode:
+
+    if (RuntimeConfigurationType.DEVELOPMENT == getConfigurationType()) {
+        getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
+    }
+
