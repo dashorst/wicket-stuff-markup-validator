@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Validator.Wicket : Validate your Wicket markup without pain" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Validator.Wicket</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/dashorst/wicket-stuff-markup-validator">View on GitHub</a>
+
+          <h1 id="project_title">Validator.Wicket</h1>
+          <h2 id="project_tagline">Validate your Wicket markup without pain</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/dashorst/wicket-stuff-markup-validator/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/dashorst/wicket-stuff-markup-validator/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>This project validates the output of your <a href="http://wicket.apache.org">Apache Wicket</a>
+application while running. It includes a error view showing each validation error,
+with line-precise error messages.</p>
+
+<p>Validates the following w3c standards:</p>
+
+<ul>
+<li>HTML 4.01 Strict</li>
+<li>HTML 4.01 Transitional</li>
+<li>XHTML 1.0 Strict</li>
+<li>XHTML 1.0 Transitional</li>
+<li>HTML 5</li>
+</ul><p>This project includes the HTML validator taken from <a href="http://validator.nu">html
+validator</a>.</p>
+
+<h2>Usage</h2>
+
+<p>Make sure you use Wicket 1.5. This validator does not run on Wicket 1.4 or 
+earlier. Java 6 is also a minimum requirement.</p>
+
+<p>There is no release available at this time. You have to build a version locally yourself (using <a href="http://maven.apache.org">Apache Maven</a>.</p>
+
+<p>Add the Wicket Stuff validator to your POM as a dependency:</p>
+
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.wicketstuff.htmlvalidator&lt;/groupId&gt;
+    &lt;artifactId&gt;htmlvalidator&lt;/artifactId&gt;
+    &lt;version&gt;1.5-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<p>Depending on your setup you need to use a different <code>scope</code> (for example test
+or provided to prevent the validator to be deployed to production).</p>
+
+<p>Add the following lines to your <code>Application</code>'s init method:</p>
+
+<pre><code>@Override
+protected void init() {
+    super.init();
+    getMarkupSettings().setStripWicketTags(true);
+    getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
+}
+</code></pre>
+
+<p>You might want to put a check for the configuration of your application 
+around the addition of the response filter, to ensure that the filter doesn't run
+in production mode:</p>
+
+<pre><code>if (RuntimeConfigurationType.DEVELOPMENT == getConfigurationType()) {
+    getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
+}
+</code></pre>
+
+<h2>Build</h2>
+
+<p>Building Wicket.Validator is not difficult: you need to have Java 6 and Maven 3 installed, 
+and know how to checkout sources from github. Assuming you know how to use Git, you need 
+to do the following on a command prompt:</p>
+
+<pre><code>$ git clone git://github.com/dashorst/wicket-stuff-markup-validator.git
+$ cd wicket-stuff-markup-validator
+$ mvn install
+</code></pre>
+
+<p>Then you can add the Wicket.Validator dependency to your own application using Maven.</p>
+
+<h2>Dependencies</h2>
+
+<p>In order to make this work, we had to provide jar files of several open source
+projects required by the HTML validator code:</p>
+
+<ul>
+<li><p><a href="http://sourceforge.net/projects/iso-relax">isorelax</a> (taken from
+<a href="http://sourceforge.net/projects/iso-relax">http://sourceforge.net/projects/iso-relax</a>, release 20041111, MIT License)</p></li>
+<li><p><a href="http://code.google.com/p/jing-trang">jing</a> (taken from
+<a href="http://code.google.com/p/jing-trang">http://code.google.com/p/jing-trang</a>, release 20091111, BSD License)</p></li>
+</ul><p>Since these recent releases are not available from the central Maven
+repository, we included the sources and provide the jar files in our own
+namespace (the package names are unmodified).</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Validator.Wicket maintained by <a href="https://github.com/dashorst">dashorst</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
