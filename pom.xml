@@ -32,23 +32,16 @@
 		<url>http://github.com/dashorst/wicket-stuff-markup-validator</url>
 	</scm>
 	<modules>
-		<module>isorelax</module>
-		<module>jing</module>
 		<module>whattf</module>
 		<module>htmlvalidator</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>isorelax</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>jing</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+	 		<dependency>
+	 			<groupId>com.thaiopensource</groupId>
+	 			<artifactId>jing</artifactId>
+	 			<version>20091111</version>
+	 		</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>whattf</artifactId>
@@ -268,6 +261,39 @@
 							<version>1.7</version>
 						</dependency>
 					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>1.6</version>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>shade</goal>
+							</goals>
+							<configuration>
+								<relocations>
+									<relocation>
+										<pattern>org.whatwf</pattern>
+										<shadedPattern>org.wicketstuff.htmlvalidator.external.org.whatwf</shadedPattern>
+									</relocation>
+									<relocation>
+										<pattern>com.thaiopensource</pattern>
+										<shadedPattern>org.wicketstuff.htmlvalidator.external.com.thaiopensource</shadedPattern>
+									</relocation>
+									<relocation>
+										<pattern>jp.gr.xml</pattern>
+										<shadedPattern>org.wicketstuff.htmlvalidator.external.jp.gr.xml</shadedPattern>
+									</relocation>
+									<relocation>
+										<pattern>org.iso_relax</pattern>
+										<shadedPattern>org.wicketstuff.htmlvalidator.external.org.iso_relax</shadedPattern>
+									</relocation>
+								</relocations>
+							</configuration>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

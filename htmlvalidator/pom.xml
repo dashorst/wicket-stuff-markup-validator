@@ -11,10 +11,10 @@
 	<packaging>jar</packaging>
 	<name>Wicket HTML Validator</name>
 	<dependencies>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>jing</artifactId>
-		</dependency>
+ 		<dependency>
+ 			<groupId>com.thaiopensource</groupId>
+ 			<artifactId>jing</artifactId>
+ 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>whattf</artifactId>
