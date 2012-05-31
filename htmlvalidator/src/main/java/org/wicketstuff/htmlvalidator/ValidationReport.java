@@ -14,15 +14,18 @@ import org.xml.sax.SAXParseException;
 public class ValidationReport implements ErrorHandler {
 	private List<SAXParseException> parseErrors = new ArrayList<SAXParseException>();
 
+	private String doctype;
 	private String markup;
 	private String[] lines;
 
 	private String page;
 
-	public ValidationReport(IRequestablePage page, String markup) {
+	public ValidationReport(IRequestablePage page, String markup,
+			DocType doctype) {
 		this.page = page.getClass().getName();
 		this.markup = markup;
 		this.lines = Strings.split(markup, '\n');
+		this.doctype = doctype.name(); // getIdentifier();
 	}
 
 	@Override
@@ -156,6 +159,14 @@ public class ValidationReport implements ErrorHandler {
 		sb.append("</div>\n");
 		sb.append("</div>\n");
 
+		sb.append("<div class=\"control-group\">\n");
+		sb.append("<label class=\"control-label\" for=\"validationDocType\">Detected doctype:</label>\n");
+		sb.append("<div class=\"controls\">");
+		sb.append("<input type=\"text\" class=\"\" readonly id=\"validationDocType\" value=\""
+				+ doctype + "\"/>");
+		sb.append("</div>\n");
+		sb.append("</div>\n");
+		
 		sb.append("<div class=\"control-group\">\n");
 		sb.append("<label class=\"control-label\" for=\"validationReportLines\">Lines:</label>\n");
 		sb.append("<div class=\"controls\">");
