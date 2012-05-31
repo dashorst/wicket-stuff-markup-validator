@@ -3,25 +3,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>XHTML Validator Test Application</title>
+	<title wicket:id="title">Validator.Wicket - Examples</title>
 </head>
 <body>
-	<h1>XHTML Validator Test Application</h1>
-	<p>
-		This test application showcases the <a href="http://tuckey.org/validation" target="_blank">XHTML Validator</a>
-		integration with <a href="http://wicket.apache.org" target="_blank">Apache Wicket</a>. This project contains
-		GPL licensed code, and is licensed under the Gnu Public License.
-	</p>
-	<p>
-		This page uses a font tag, while specifying xhtml1-strict, which is invalid.
-	</p>
-	<wicket:link>
-		<ul>
-			<li><a href="ValidXHtmlPage.html">Back</a></li>
-		</ul>
-	</wicket:link>
+    <div class="container">
+    	<h1>Validator.Wicket</h1>
+		<p>
+			These examples display some of the capabilities of the HTML validator for Apache Wicket.
+		</p>
+		<div wicket:id="menu"></div>
 
-	<p><font size="6">Inside font</font></p>	
+		This page uses a <code>&lt;div&gt;</code> tag inside a <code>&lt;span&gt;</code> tag, while specifying XHTML 1.0 Strict, which is invalid.
+		<p>The offending line: <span>a <div>div inside a </div> span</span></p>
+
+		<p>This line should end with a closing <code>&lt;/p&gt;</code> tag, but doesn't.
+	</div>
 </body>
 </html>
-

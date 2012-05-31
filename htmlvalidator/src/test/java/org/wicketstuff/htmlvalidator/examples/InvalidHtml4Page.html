@@ -1,25 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<html lang="en" xmlns:wicket>
 <head>
-	<title>XHTML Validator Test Application</title>
+	<title wicket:id="title">Validator.Wicket - Examples</title>
 </head>
 <body>
-	<h1>XHTML Validator Test Application</h1>
-	<p>
-	This test application showcases the <a href="http://tuckey.org/validation" target="_blank">XHTML Validator</a>
-	integration with <a href="http://wicket.apache.org" target="_blank">Apache Wicket</a>. This project contains
-	GPL licensed code, and is licensed under the Gnu Public License.
-	
-	<p>
-	This page uses a font tag, while specifying html 4.01 strict, which is invalid.
+    <div class="container">
+    	<h1>Validator.Wicket</h1>
+		<p>
+			These examples display some of the capabilities of the HTML validator for Apache Wicket.
+		</p>
+		<div wicket:id="menu"></div>
 
-	<wicket:link>
-		<ul>
-			<li><a href="ValidXHtmlPage.html">Back</a></li>
-		</ul>
-	</wicket:link>
-
-	<p><font size="6">Inside font</font></p>	
+		This page uses a <tt>&lt;font&gt;</tt> tag, while specifying html 4.01 strict, which is invalid.
+		<p>The offending line: <font size="6">Inside font</font></p>
+	</div>	
 </body>
 </html>
-

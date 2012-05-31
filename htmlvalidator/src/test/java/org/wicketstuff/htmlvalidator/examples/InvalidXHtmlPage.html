@@ -1,14 +1,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title wicket:id="title">Validator.Wicket - Examples</title>
+</head>
 <body>
-	<wicket:extend>
-		<h2>This is invalid XHTML</h2>
-		<span><div></div></span>
-		<span><div></div></span>
-		<h2><span>Some text</span></h2>
-	</wicket:extend>
+    <div class="container">
+    	<h1>Validator.Wicket</h1>
+		<p>
+			These examples display some of the capabilities of the HTML validator for Apache Wicket.
+		</p>
+		<div wicket:id="menu"></div>
+
+		This page uses a <code>&lt;div&gt;</code> tag inside a <code>&lt;span&gt;</code> tag, while specifying XHTML 1.0 Transitional, which is invalid.
+		<p>The offending line: <span>a <div>div inside a </div> span</span></p>
+
+		<p>This line should end with a closing <code>&lt;/p&gt;</code> tag, but doesn't.
+	</div>
 </body>
 </html>
-
