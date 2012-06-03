@@ -1,8 +1,7 @@
 
-===================================================================
 CHARACTER SETS
 
-(last updated 2007-05-14)
+(last updated 2011-10-30)
 
 These are the official names for character sets that may be used in
 the Internet and may be referred to in Internet documentation.  These
@@ -28,12 +27,12 @@ ISO/IEC 10646 coded character sets together with a specification of a
 (set of) sub-repertoires that may occur.  The third region (>1999) is
 intended for vendor specific coded character sets.
 
-	Assigned MIB enum Numbers
-	-------------------------
-	0-2		Reserved
-	3-999		Set By Standards Organizations
-	1000-1999	Unicode / 10646
-	2000-2999	Vendor
+  Assigned MIB enum Numbers
+  -------------------------
+  0-2   Reserved
+  3-999   Set By Standards Organizations
+  1000-1999 Unicode / 10646
+  2000-2999 Vendor
 
 The aliases that start with "cs" have been added for use with the
 IANA-CHARSET-MIB as originally defined in RFC3808, and as currently
@@ -167,7 +166,7 @@ Alias: latin5
 Alias: l5
 Alias: csISOLatin5
 
-Name: ISO-8859-10 (preferred MIME name)			  [RFC1345,KXS2]
+Name: ISO-8859-10 (preferred MIME name)       [RFC1345,KXS2]
 MIBenum: 13
 Source: ECMA registry
 Alias: iso-ir-157
@@ -641,6 +640,7 @@ Source: ECMA registry
 Alias: iso-ir-121
 Alias: ISO646-CA
 Alias: csa7-1
+Alias: csa71
 Alias: ca
 Alias: csISO121Canadian1
 
@@ -650,6 +650,7 @@ Source: ECMA registry
 Alias: iso-ir-122
 Alias: ISO646-CA2
 Alias: csa7-2
+Alias: csa72
 Alias: csISO122Canadian2
 
 Name: CSA_Z243.4-1985-gr                                 [RFC1345,KXS2]
@@ -922,7 +923,9 @@ Alias: csUnicodeLatin1
 Alias: ISO-10646
 
 Name: ISO-10646-J-1
+MIBenum: 1004
 Source: ISO 10646 Japanese, see RFC 1815.
+Alias: csUnicodeJapanese
 
 Name: ISO-Unicode-IBM-1261
 MIBenum: 1005
@@ -1708,6 +1711,16 @@ MIBenum: 2107
 Source: See <http://www.iana.org/assignments/charset-reg/TSCII>           [Kalyanasundaram]
 Alias: csTSCII
 
+Name: CP51932
+MIBenum: 2108
+Source: See <http://www.iana.org/assignments/charset-reg/CP51932>                  [Naruse]
+Alias: csCP51932
+
+Name: windows-874
+MIBenum: 2109
+Source: See <http://www.iana.org/assignments/charset-reg/windows-874>              [Steele]
+Alias: None
+
 Name: windows-1250
 MIBenum: 2250
 Source: Microsoft  (http://www.iana.org/assignments/charset-reg/windows-1250) [Lazhintseva]
@@ -1756,6 +1769,11 @@ Alias: None
 Name: TIS-620
 MIBenum: 2259
 Source: Thai Industrial Standards Institute (TISI)                             [Tantsetthi]
+
+Name: CP50220
+MIBenum: 2260
+Source: See <http://www.iana.org/assignments/charset-reg/CP50220>                  [Naruse]
+Alias: csCP50220
 
 
 REFERENCES
@@ -1861,6 +1879,8 @@ PEOPLE
 
 [Murai] Jun Murai <jun&wide.ad.jp>
 
+[Naruse] Yui Naruse, <naruse&airemix.jp>, 15 September 2010, 23 September 2011. 
+
 [Nussbacher] Hank Nussbacher, <hank&vm.tau.ac.il>
 
 [Ohta] Masataka Ohta, <mohta&cc.titech.ac.jp>, July 1995.
@@ -1875,6 +1895,8 @@ PEOPLE
           September 2002.
 
 [Simonsen] Keld Simonsen, <Keld.Simonsen&rap.dk>, August 2000.
+
+[Steele] Shawn Steele, <Shawn.Steele&microsoft.com>, 4 November 2010.
 
 [Tantsetthi] Trin Tantsetthi, <trin&mozart.inet.co.th>, September 1998.
 
@@ -1891,7 +1913,6 @@ PEOPLE
 [Yick] Nicky Yick, <cliac&itsd.gcn.gov.hk>, October 2000.
 
 []
-
 
 
 
