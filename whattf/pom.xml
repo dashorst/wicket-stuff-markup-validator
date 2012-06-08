@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.wicketstuff.htmlvalidator</groupId>
-		<artifactId>htmlvalidator-parent</artifactId>
+		<artifactId>wicketstuff-htmlvalidator-parent</artifactId>
 		<version>1.5-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>

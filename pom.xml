@@ -1,15 +1,31 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+	    <groupId>org.sonatype.oss</groupId>
+	    <artifactId>oss-parent</artifactId>
+	    <version>7</version>
+	</parent>
 	<groupId>org.wicketstuff.htmlvalidator</groupId>
-	<artifactId>htmlvalidator-parent</artifactId>
+	<artifactId>wicketstuff-htmlvalidator-parent</artifactId>
 	<version>1.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Wicket Stuff HTML Validator Parent pom</name>
+	<name>WicketStuff HTML Validator Parent pom</name>
 	<description>
 		A Wicket response filter implementation that validates whether 
 		the generated markup is compliant with the W3C specifications.
 	</description>
+	<url>https://github.com/dashorst/wicket-stuff-markup-validator</url>
+	<developers>
+		<developer>
+			<id>dashorst</id>
+			<name>Martijn Dashorst</name>
+		</developer>
+		<developer>
+			<id>papegaaij</id>
+			<name>Emond Papegaaij</name>
+		</developer>
+	</developers>
 	<properties>
 		<wicket.version>1.5.6</wicket.version>
 		<slf4j.version>1.6.4</slf4j.version>
@@ -18,6 +34,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
 		<license>
 			<name>BSD License</name>
 			<distribution>repo</distribution>
@@ -28,8 +49,9 @@
 		</license>
 	</licenses>
 	<scm>
+		<connection>scm:git:git@github.com:dashorst/wicket-stuff-markup-validator.git</connection>
 		<developerConnection>scm:git:git://github.com/dashorst/wicket-stuff-markup-validator.git</developerConnection>
-		<url>http://github.com/dashorst/wicket-stuff-markup-validator</url>
+		<url>git@github.com:dashorst/wicket-stuff-markup-validator.git</url>
 	</scm>
 	<modules>
 		<module>whattf</module>
