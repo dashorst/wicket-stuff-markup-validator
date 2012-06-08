@@ -65,9 +65,9 @@
 	 			<version>20091111</version>
 	 		</dependency>
 			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>whattf</artifactId>
-				<version>${project.version}</version>
+				<groupId>org.wicketstuff.htmlvalidator</groupId>
+				<artifactId>wicketstuff-whattf</artifactId>
+				<version>1.5-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>nu.validator.htmlparser</groupId>

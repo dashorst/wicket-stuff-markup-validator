@@ -7,7 +7,7 @@
 		<version>1.5-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<artifactId>whattf</artifactId>
+	<artifactId>wicketstuff-whattf</artifactId>
 	<packaging>jar</packaging>
 	<name>WHATTF HTML 5 syntax definitions</name>
 	<licenses>
