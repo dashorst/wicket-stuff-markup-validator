@@ -52,6 +52,12 @@ in production mode:
         getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
     }
 
+License
+-------
+
+This project is distributed using the Apache 2 License (see LICENSE for more details
+on other included software).
+
 Build
 -----
 
