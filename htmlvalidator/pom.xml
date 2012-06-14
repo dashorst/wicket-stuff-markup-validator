@@ -11,10 +11,10 @@
 	<packaging>jar</packaging>
 	<name>WicketStuff HTML Validator</name>
 	<dependencies>
- 		<dependency>
- 			<groupId>com.thaiopensource</groupId>
- 			<artifactId>jing</artifactId>
- 		</dependency>
+		<dependency>
+			<groupId>org.wicketstuff.htmlvalidator</groupId>
+			<artifactId>wicketstuff-jing</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.wicketstuff.htmlvalidator</groupId>
 			<artifactId>wicketstuff-whattf</artifactId>

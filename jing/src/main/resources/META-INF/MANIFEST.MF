@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.1
+Created-By: 1.5.0_20-141 (Apple Inc.)
+Main-Class: com/thaiopensource/relaxng/util/Driver
+Class-Path: xercesImpl.jar xml-apis.jar saxon.jar saxon9.jar xalan.jar
+  isorelax.jar resolver.jar
+
