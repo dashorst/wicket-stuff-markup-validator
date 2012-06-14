@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * inputs in Web Forms 2.0.
  * <p>This datatype must not accept the empty string.
  * 
- * @version $Id: Date.java 232 2007-11-21 13:19:11Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public final class Date extends AbstractDatetime {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Henri Sivonen
+ * Copyright (c) 2011 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"), 
@@ -22,52 +22,46 @@
 
 package org.whattf.datatype;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.relaxng.datatype.DatatypeException;
 
-/**
- * This datatype shall accept any string that consists of one or more characters 
- * and does not contain any whitespace characters.
- * <p>The ID-type of this datatype is ID.
- * @version $Id$
- * @author hsivonen
- */
-public class Id extends AbstractDatatype {
+abstract class AbstractRel extends AbstractDatatype {
 
-    /**
-     * The singleton instance.
-     */
-    public static final Id THE_INSTANCE = new Id();
-
-    /**
-     * Package-private constructor
-     */
-    protected Id() {
-        super();
-    }
-
-    /**
-     * Checks that the value is a proper HTML5 id.
-     * @param literal the value
-     * @param context ignored
-     * @throws DatatypeException if the value isn't valid
-     * @see org.relaxng.datatype.Datatype#checkValid(java.lang.String, org.relaxng.datatype.ValidationContext)
-     */
-    public void checkValid(CharSequence literal)
+    @Override public void checkValid(CharSequence literal)
             throws DatatypeException {
+        // There are currently no registered rel tokens with a colon in them
+        // so don't bother supporting the colon case until there are 
+        // registered tokens with a colon.
+        Set<String> tokensSeen = new HashSet<String>();
+        StringBuilder builder = new StringBuilder();
         int len = literal.length();
-        if (len == 0) {
-            throw newDatatypeException("An ID must not be the empty string.");
-        }
         for (int i = 0; i < len; i++) {
             char c = literal.charAt(i);
-            if (isWhitespace(c)) {
-                throw newDatatypeException(i, "An ID must not contain whitespace.");
+            if (isWhitespace(c) && builder.length() > 0) {
+                checkToken(builder, i, tokensSeen);
+                builder.setLength(0);
+            } else {
+                builder.append(toAsciiLowerCase(c));
             }
+        }
+        if (builder.length() > 0) {
+            checkToken(builder, len, tokensSeen);
         }
     }
 
-    @Override
-    public String getName() {
-        return "id";
+    private void checkToken(StringBuilder builder, int i, Set<String> tokensSeen) throws DatatypeException {
+        String token = builder.toString();
+        if (tokensSeen.contains(token)) {
+            throw newDatatypeException(i - 1, "Duplicate keyword ", token, ".");
+        }
+        tokensSeen.add(token);
+        if (!isRegistered(token)) {
+            throw newDatatypeException(i - 1, "Keyword ", token, " is not registered.");            
+        }
     }
+
+    protected abstract boolean isRegistered(String token);
+
 }

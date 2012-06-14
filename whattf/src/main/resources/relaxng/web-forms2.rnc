@@ -16,7 +16,7 @@ datatypes w = "http://whattf.org/datatype-draft"
 
 	shared-form.attrs.formaction =
 		attribute formaction {
-			common.data.uri
+			common.data.uri.non-empty
 		}
 
 	shared-form.attrs.formenctype =
@@ -36,8 +36,6 @@ datatypes w = "http://whattf.org/datatype-draft"
 		shared-form.attrs.formmethod.data = 
 			( w:string "get"
 			| w:string "post"
-			| w:string "put"
-			| w:string "delete"
 			)
 
 	shared-form.attrs.formtarget = 
@@ -72,7 +70,12 @@ datatypes w = "http://whattf.org/datatype-draft"
 
 	shared-form.attrs.placeholder = 
 		attribute placeholder {
-			string # FIXME line breaks
+			form.data.stringwithoutlinebreaks
+		}
+
+	shared-form.attrs.dirname = 
+		attribute dirname {
+			form.data.nonemptystring
 		}
 
 ## Shared attributes for <input>
@@ -111,6 +114,7 @@ datatypes w = "http://whattf.org/datatype-draft"
 		&	shared-form.attrs.pattern? 
 		&	shared-form.attrs.required? 
 		&	shared-form.attrs.placeholder?
+		&	shared-form.attrs.dirname?
 		)
 
 ## Password Field: <input type='password'>, Extensions
@@ -431,6 +435,7 @@ datatypes w = "http://whattf.org/datatype-draft"
 		&	input.attrs.step.float? 
 		&	shared-form.attrs.readonly? 
 		&	shared-form.attrs.required? 
+		&	shared-form.attrs.placeholder?
 		&	input.number.attrs.value? 
 		&	common.attrs.aria.implicit.input?
 		)	
@@ -576,6 +581,7 @@ datatypes w = "http://whattf.org/datatype-draft"
 		&	shared-form.attrs.required? 
 		&	shared-form.attrs.size?
 		&	shared-form.attrs.placeholder?
+		&	shared-form.attrs.dirname?
 		&	input.search.attrs.value? 
 		&	common.attrs.aria.implicit.input?
 		)	
@@ -585,7 +591,7 @@ datatypes w = "http://whattf.org/datatype-draft"
 			}
 		input.search.attrs.value =
 			attribute value {
-				string # FIXME line breaks
+				form.data.stringwithoutlinebreaks
 			}
 		
 	input.elem |= input.search.elem
@@ -616,7 +622,7 @@ datatypes w = "http://whattf.org/datatype-draft"
 			}
 		input.tel.attrs.value =
 			attribute value {
-				string # FIXME line breaks
+				form.data.stringwithoutlinebreaks
 			}
 		
 	input.elem |= input.tel.elem
@@ -677,6 +683,7 @@ datatypes w = "http://whattf.org/datatype-draft"
 		&	shared-form.attrs.autofocus? 
 		&	shared-form.attrs.required? 
 		&	shared-form.attrs.placeholder?
+		&	shared-form.attrs.dirname?
 		&	textarea.attrs.rows?
 		&	(	(	textarea.attrs.wrap.hard 
 				&	textarea.attrs.cols
@@ -750,8 +757,6 @@ datatypes w = "http://whattf.org/datatype-draft"
 		# REVISIT should this be case-insensitive in conforming XHTML documents?
 		form.attrs.enctype.data |= 
 			( w:string "text/plain" )
-		form.attrs.method.data |= 
-			( w:string "put" | w:string "delete" )
 
 ## Fieldset: <fieldset>, extensions
 
@@ -788,3 +793,9 @@ datatypes w = "http://whattf.org/datatype-draft"
 
 	common.elem.phrasing |= keygen.elem
 
+## Selection Menu: <select>, Extensions
+
+	select.attrs &=
+		(	shared-form.attrs.autofocus? 
+		&	shared-form.attrs.required? 
+		)

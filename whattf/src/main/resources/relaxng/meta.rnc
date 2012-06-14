@@ -58,41 +58,39 @@ datatypes w = "http://whattf.org/datatype-draft"
 		&	body.attrs.onoffline?
 		&	body.attrs.ononline?
 		&	body.attrs.onpopstate?
-		&	body.attrs.onredo?
 		&	body.attrs.onresize?
 		&	body.attrs.onstorage?
-		&	body.attrs.onundo?
 		&	body.attrs.onunload?
 		)
 	body.inner =
 		( common.inner.flow )
 
 	body.attrs.onafterprint =
-		attribute onafterprint { string }
+		attribute onafterprint { common.data.functionbody }
 	body.attrs.onbeforeprint =
-		attribute onbeforeprint { string }
+		attribute onbeforeprint { common.data.functionbody }
 	body.attrs.onbeforeunload =
-		attribute onbeforeunload { string }
+		attribute onbeforeunload { common.data.functionbody }
 	body.attrs.onhashchange =
-		attribute onhashchange { string }
+		attribute onhashchange { common.data.functionbody }
 	body.attrs.onmessage =
-		attribute onmessage { string }
+		attribute onmessage { common.data.functionbody }
 	body.attrs.onoffline =
-		attribute onoffline { string }
+		attribute onoffline { common.data.functionbody }
 	body.attrs.ononline =
-		attribute ononline { string }
+		attribute ononline { common.data.functionbody }
 	body.attrs.onpopstate =
-		attribute onpopstate { string }
+		attribute onpopstate { common.data.functionbody }
 	body.attrs.onredo =
-		attribute onredo { string }
+		attribute onredo { common.data.functionbody }
 	body.attrs.onresize =
-		attribute onresize { string }
+		attribute onresize { common.data.functionbody }
 	body.attrs.onstorage =
-		attribute onstorage { string }
+		attribute onstorage { common.data.functionbody }
 	body.attrs.onundo =
-		attribute onundo { string }
+		attribute onundo { common.data.functionbody }
 	body.attrs.onunload =
-		attribute onunload { string }
+		attribute onunload { common.data.functionbody }
 
 ## Document Title: <title>
 
@@ -108,7 +106,10 @@ datatypes w = "http://whattf.org/datatype-draft"
 	base.elem =
 		element base { base.inner & base.attrs }
 	base.attrs =
-		(	common.attrs
+		(	common.attrs.basic
+		&	common.attrs.i18n
+		&	common.attrs.present
+		&	common.attrs.other
 		&	(	(	base.attrs.href
 				&	base.attrs.target?
 				)
@@ -131,15 +132,26 @@ datatypes w = "http://whattf.org/datatype-draft"
 	link.elem =
 		element link { link.inner & link.attrs }
 	link.attrs =
-		(	common.attrs
-		&	shared-hyperlink.attrs.href
-		&	shared-hyperlink.attrs.rel
+		(	common.attrs.basic
+		&	common.attrs.i18n
+		&	common.attrs.present
+		&	common.attrs.other
+		&	link.attrs.href
+		&	link.attrs.rel
 		&	shared-hyperlink.attrs.hreflang?
 		&	shared-hyperlink.attrs.media?
 		&	shared-hyperlink.attrs.type?
 		&	link.attrs.sizes?
 		#	link.attrs.title included in common.attrs
 		)
+		link.attrs.href =
+			attribute href {
+				common.data.uri.non-empty
+			}
+		link.attrs.rel =
+			attribute rel {
+				w:link-rel
+			}
 		link.attrs.sizes =
 			attribute sizes {
 				w:string "any" | common.data.sizes
@@ -202,7 +214,7 @@ datatypes w = "http://whattf.org/datatype-draft"
 		)
 		meta.name.attrs.name =
 			attribute name {
-				string
+				w:meta-name
 			}
 		meta.name.attrs.content =
 			attribute content {
@@ -259,31 +271,6 @@ datatypes w = "http://whattf.org/datatype-draft"
 			}
 		
 	common.elem.metadata |= meta.http-equiv.default-style.elem # not quite right per spec
-                                                               # if the definition is 
-                                                               # reused in another language
-
-## "content-language" pragma directive: <meta http-equiv='content-language'> (obsolete)
-
-	meta.http-equiv.content-language.elem =
-		element meta { meta.inner & meta.http-equiv.content-language.attrs }
-	meta.http-equiv.content-language.attrs =
-		(	common.attrs.basic
-		&	common.attrs.i18n
-		&	common.attrs.present
-		&	common.attrs.other
-		&	meta.http-equiv.attrs.http-equiv.content-language
-		&	meta.http-equiv.attrs.content.content-language
-		)
-		meta.http-equiv.attrs.http-equiv.content-language =
-			attribute http-equiv {
-				w:string "content-language"
-			}
-		meta.http-equiv.attrs.content.content-language =
-			attribute content {
-				common.data.langcode
-			}
-		
-	common.elem.metadata |= meta.http-equiv.content-language.elem # not quite right per spec
                                                                # if the definition is 
                                                                # reused in another language
 

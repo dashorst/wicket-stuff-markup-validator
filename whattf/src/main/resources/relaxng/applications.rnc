@@ -10,6 +10,7 @@ datatypes w = "http://whattf.org/datatype-draft"
 		(	common.attrs.contextmenu?
 		&	common.attrs.contenteditable?
 		&	common.attrs.draggable?
+		&	common.attrs.dropzone?
 		&	common.attrs.hidden?
 		&	common.attrs.spellcheck?
 		)
@@ -37,6 +38,26 @@ datatypes w = "http://whattf.org/datatype-draft"
 			w:string "true" | w:string "false"
 		}
 
+## Dropzone: dropzone
+
+	common.attrs.dropzone =
+		attribute dropzone {
+			list {
+				(	xsd:string { pattern = "[sS][tT][rR][iI][nN][gG]:.+" }
+				|	xsd:string { pattern = "[fF][iI][lL][eE]:.+" }
+				)*
+				,
+				(	w:string "copy"
+				|	w:string "move"
+				|	w:string "link"
+				)?
+				,
+				(	xsd:string { pattern = "[sS][tT][rR][iI][nN][gG]:.+" }
+				|	xsd:string { pattern = "[fF][iI][lL][eE]:.+" }
+				)*
+			}
+		}
+
 ## Hidden Element: hidden
 
 	common.attrs.hidden =
@@ -55,7 +76,7 @@ datatypes w = "http://whattf.org/datatype-draft"
 
 	html.attrs.manifest =
 		attribute manifest {
-			common.data.uri
+			common.data.uri.non-empty
 		}
 		
 	html.attrs &= html.attrs.manifest?
@@ -155,7 +176,7 @@ datatypes w = "http://whattf.org/datatype-draft"
 			}
 		command.attrs.icon =
 			attribute icon {
-				common.data.uri
+				common.data.uri.non-empty
 			}
 		command.attrs.disabled =
 			attribute disabled {
@@ -244,8 +265,8 @@ datatypes w = "http://whattf.org/datatype-draft"
 				w:string "open" | w:string ""
 			}
 	details.inner =
-		(	summary.elem?
-		,	common.inner.flow 
+		(	summary.elem
+		,	common.inner.flow
 		)
 	
 	common.elem.flow |= details.elem

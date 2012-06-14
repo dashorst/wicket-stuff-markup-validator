@@ -30,7 +30,7 @@ import org.relaxng.datatype.DatatypeException;
 /**
  * 
  * 
- * @version $Id: Time.java 232 2007-11-21 13:19:11Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public final class Time extends AbstractDatetime {
@@ -43,7 +43,7 @@ public final class Time extends AbstractDatetime {
     /**
      * The rexexp for this datatype.
      */
-    private static final Pattern THE_PATTERN = Pattern.compile("^([0-9]{2}):([0-9]{2})(?::([0-9]{2})(?:\\.[0-9]+)?)?$");
+    private static final Pattern THE_PATTERN = Pattern.compile("^([0-9]{2}):([0-9]{2})(?::([0-9]{2})(?:\\.[0-9]{1,3})?)?$");
 
     /**
      * Constructor.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Henri Sivonen
+ * Copyright (c) 2011 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"), 
@@ -22,49 +22,44 @@
 
 package org.whattf.datatype;
 
-import java.util.regex.Pattern;
+import org.relaxng.datatype.DatatypeException;
 
-/**
- * This datatype shall accept strings that conform to the format specified for
- * <a href='http://whatwg.org/specs/web-forms/current-work/#datetime-local'><code>datetime-local</code></a>
- * inputs in Web Forms 2.0.
- * <p>
- * This datatype must not accept the empty string.
- * 
- * @version $Id$
- * @author hsivonen
- */
-public final class DatetimeLocal extends AbstractDatetime {
-    
+public class SimpleColor extends AbstractDatatype {
+
     /**
      * The singleton instance.
      */
-    public static final DatetimeLocal THE_INSTANCE = new DatetimeLocal();
-    
-    /**
-     * The rexexp for this datatype.
-     */
-    private static final Pattern THE_PATTERN = Pattern.compile("^([0-9]{4,})-([0-9]{2})-([0-9]{2})[T ]([0-9]{2}):([0-9]{2})(?::([0-9]{2})(?:\\.[0-9]{1,3})?)?$");
+    public static final SimpleColor THE_INSTANCE = new SimpleColor();
 
     /**
-     * Constructor.
+     * Package-private constructor
      */
-    private DatetimeLocal() {
+    private SimpleColor() {
         super();
     }
-    
-    /**
-     * Returns the regexp for this datatype.
-     * 
-     * @return the regexp for this datatype
-     * @see org.whattf.datatype.AbstractDatetime#getPattern()
-     */
-    protected final Pattern getPattern() {
-        return THE_PATTERN;
+
+    @Override public void checkValid(CharSequence literal)
+            throws DatatypeException {
+        if (literal.length() != 7) {
+            throw newDatatypeException("Incorrect length for color string.");
+        }
+        char c = literal.charAt(0);
+        if (c != '#') {
+            throw newDatatypeException(0,
+                    "Color starts with incorrect character ", c,
+                    ". Expected the number sign.");
+        }
+        for (int i = 1; i < 7; i++) {
+            c = literal.charAt(i);
+            if (!((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))) {
+                throw newDatatypeException(0, "", c,
+                        " is not a valid hexadecimal digit.");
+            }
+        }
     }
 
-    @Override
-    public String getName() {
-        return "local datetime";
+    @Override public String getName() {
+        return "simple color";
     }
+
 }

@@ -30,7 +30,7 @@ import org.relaxng.datatype.DatatypeException;
  * This datatype shall accept the strings that are allowed as the value of the Web Forms 2.0 
  * <a href="http://whatwg.org/specs/web-forms/current-work/#pattern"><code>pattern</code></a> 
  * attribute.
- * @version $Id: Pattern.java 232 2007-11-21 13:19:11Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public final class Pattern extends AbstractDatatype {

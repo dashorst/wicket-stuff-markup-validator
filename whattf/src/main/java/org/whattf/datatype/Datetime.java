@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * inputs in Web Forms 2.0.
  * <p>This datatype must not accept the empty string.
  * 
- * @version $Id: Datetime.java 232 2007-11-21 13:19:11Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public final class Datetime extends AbstractDatetime {
@@ -43,7 +43,7 @@ public final class Datetime extends AbstractDatetime {
     /**
      * The rexexp for this datatype.
      */
-    private static final Pattern THE_PATTERN = Pattern.compile("^([0-9]{4,})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2})(?::([0-9]{2})(?:\\.[0-9]+)?)?Z$");
+    private static final Pattern THE_PATTERN = Pattern.compile("^([0-9]{4,})-([0-9]{2})-([0-9]{2})[T ]([0-9]{2}):([0-9]{2})(?::([0-9]{2})(?:\\.[0-9]{1,3})?)?Z$");
 
     /**
      * Constructor.

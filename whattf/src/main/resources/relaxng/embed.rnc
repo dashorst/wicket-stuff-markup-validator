@@ -25,7 +25,7 @@ namespace local = ""
 		)
 		img.attrs.src =
 			attribute src {
-				common.data.uri
+				common.data.uri.non-empty
 			}
 		img.attrs.alt =
 			attribute alt {
@@ -70,7 +70,7 @@ namespace local = ""
 		)
 		embed.attrs.src =
 			attribute src {
-				common.data.uri
+				common.data.uri.non-empty
 			}
 		embed.attrs.type =
 			attribute type {
@@ -99,6 +99,7 @@ namespace local = ""
 			                    | contextmenu 
 			                    | contenteditable 
 			                    | draggable 
+			                    | dropzone
 			                    | hidden
 			                    | onabort
 			                    | onblur
@@ -120,8 +121,6 @@ namespace local = ""
 			                    | onended
 			                    | onerror
 			                    | onfocus
-			                    | onformchange
-			                    | onforminput
 			                    | oninput
 			                    | oninvalid
 			                    | onkeydown
@@ -143,6 +142,7 @@ namespace local = ""
 			                    | onprogress
 			                    | onratechange
 			                    | onreadystatechange
+			                    | onreset
 			                    | onscroll
 			                    | onseeked
 			                    | onseeking
@@ -194,6 +194,18 @@ namespace local = ""
 			                    | itemid
 			                    | name
 			                    | align
+			                    | about
+			                    | prefix
+			                    | property
+			                    | typeof
+			                    | vocab
+			                    | content
+			                    | datatype
+			                    | href
+			                    | rel
+			                    | resource
+			                    | rev
+			                    | inlist
 			                    ) 
 			{
 				string
@@ -228,7 +240,7 @@ namespace local = ""
 		)
 		object.attrs.data =
 			attribute data {
-				common.data.uri
+				common.data.uri.non-empty
 			}
 		object.attrs.type =
 			attribute type {
@@ -289,6 +301,7 @@ namespace local = ""
 	iframe.attrs =
 		(	common.attrs
 		&	iframe.attrs.src?
+		&	iframe.attrs.srcdoc?
 		&	iframe.attrs.name?
 		&	iframe.attrs.width?
 		&	iframe.attrs.height?
@@ -300,7 +313,11 @@ namespace local = ""
 		)
 		iframe.attrs.src =
 			attribute src {
-				common.data.uri
+				common.data.uri.non-empty
+			}
+		iframe.attrs.srcdoc =
+			attribute srcdoc {
+				string #FIXME
 			}
 		iframe.attrs.name =
 			attribute name {
@@ -500,7 +517,10 @@ namespace local = ""
 	area.elem =
 		element area { area.inner & area.attrs }
 	area.attrs =
-		(	common.attrs
+		(	common.attrs.basic
+		&	common.attrs.i18n
+		&	common.attrs.present
+		&	common.attrs.other
 		&	(	area.attrs.alt
 			&	shared-hyperlink.attrs.href
 			)?

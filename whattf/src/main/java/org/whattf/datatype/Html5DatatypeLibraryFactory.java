@@ -28,7 +28,7 @@ import org.relaxng.datatype.DatatypeLibraryFactory;
 /**
  * The factory for datatype library autodiscovery.
  * 
- * @version $Id: Html5DatatypeLibraryFactory.java 94 2006-04-11 12:04:25Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public class Html5DatatypeLibraryFactory implements

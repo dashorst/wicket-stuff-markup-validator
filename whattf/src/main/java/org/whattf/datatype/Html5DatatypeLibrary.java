@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2006 Henri Sivonen
- * Copyright (c) 2007-2010 Mozilla Foundation
+ * Copyright (c) 2007-2011 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"), 
@@ -31,7 +31,7 @@ import org.relaxng.datatype.helpers.ParameterlessDatatypeBuilder;
 
 /**
  * Factory for HTML5 datatypes.
- * @version $Id: Html5DatatypeLibrary.java 561 2010-05-25 14:33:30Z sideshowbarker $
+ * @version $Id$
  * @author hsivonen
  */
 public class Html5DatatypeLibrary implements DatatypeLibrary {
@@ -111,14 +111,10 @@ public class Html5DatatypeLibrary implements DatatypeLibrary {
         } else if ("integer-positive".equals(typeLocalName)) {
             return IntPositive.THE_INSTANCE;
         } else if ("float".equals(typeLocalName)) {
-            return FloatingPoint.THE_INSTANCE;
-        } else if ("float-non-negative".equals(typeLocalName)) {
-            return FloatingPointNonNegative.THE_INSTANCE;
-        } else if ("float-positive".equals(typeLocalName)) {
-            return FloatingPointPositive.THE_INSTANCE;
-        } else if ("float-exp".equals(typeLocalName)) {
             return FloatingPointExponent.THE_INSTANCE;
-        } else if ("float-exp-positive".equals(typeLocalName)) {
+        } else if ("float-non-negative".equals(typeLocalName)) {
+            return FloatingPointExponentNonNegative.THE_INSTANCE;
+        } else if ("float-positive".equals(typeLocalName)) {
             return FloatingPointExponentPositive.THE_INSTANCE;
         } else if ("mime-type-list".equals(typeLocalName)) {
             return MimeTypeList.THE_INSTANCE;
@@ -132,8 +128,8 @@ public class Html5DatatypeLibrary implements DatatypeLibrary {
             return XmlName.THE_INSTANCE;
         } else if ("meta-charset".equals(typeLocalName)) {
             return MetaCharset.THE_INSTANCE;
-        } else if ("microdata-identifier".equals(typeLocalName)) {
-            return MicrodataIdentifier.THE_INSTANCE;
+        } else if ("microdata-property".equals(typeLocalName)) {
+            return MicrodataProperty.THE_INSTANCE;
         } else if ("charset".equals(typeLocalName)) {
             return Charset.THE_INSTANCE;
         } else if ("refresh".equals(typeLocalName)) {
@@ -142,8 +138,6 @@ public class Html5DatatypeLibrary implements DatatypeLibrary {
             return ParenthesisStart.THE_INSTANCE;
         } else if ("paren-end".equals(typeLocalName)) {
             return ParenthesisEnd.THE_INSTANCE;
-        } else if ("color".equals(typeLocalName)) {
-            return Color.THE_INSTANCE;
         } else if ("email-address".equals(typeLocalName)) {
             return EmailAddress.THE_INSTANCE;
         } else if ("email-address-list".equals(typeLocalName)) {
@@ -154,6 +148,24 @@ public class Html5DatatypeLibrary implements DatatypeLibrary {
             return Zero.THE_INSTANCE;
         } else if ("cdo-cdc-pair".equals(typeLocalName)) {
             return CdoCdcPair.THE_INSTANCE;
+        } else if ("script".equals(typeLocalName)) {
+            return Script.THE_INSTANCE;
+        } else if ("script-documentation".equals(typeLocalName)) {
+            return ScriptDocumentation.THE_INSTANCE;
+        } else if ("functionbody".equals(typeLocalName)) {
+            return FunctionBody.THE_INSTANCE;
+        } else if ("a-rel".equals(typeLocalName)) {
+            return ARel.THE_INSTANCE;
+        } else if ("link-rel".equals(typeLocalName)) {
+            return LinkRel.THE_INSTANCE;
+        } else if ("meta-name".equals(typeLocalName)) {
+            return MetaName.THE_INSTANCE;
+        } else if ("non-empty-string".equals(typeLocalName)) {
+            return NonEmptyString.THE_INSTANCE;
+        } else if ("string-without-line-breaks".equals(typeLocalName)) {
+            return StringWithoutLineBreaks.THE_INSTANCE;
+        } else if ("simple-color".equals(typeLocalName)) {
+            return SimpleColor.THE_INSTANCE;
         }
         throw new DatatypeException("Unknown local name for datatype: " + typeLocalName);
     }

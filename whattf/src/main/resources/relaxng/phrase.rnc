@@ -11,8 +11,11 @@ datatypes w = "http://whattf.org/datatype-draft"
 	a.elem.flow =
 		element a { a.inner.flow & a.attrs }
 	a.attrs =
-		(	common.attrs
-		& a.attrs.name?
+		(	common.attrs.basic
+		&	common.attrs.i18n
+		&	common.attrs.present
+		&	common.attrs.other
+		&	a.attrs.name?
 		&	shared-hyperlink.attrs.href?
 		&	shared-hyperlink.attrs.target?
 		&	shared-hyperlink.attrs.rel?
@@ -48,7 +51,7 @@ datatypes w = "http://whattf.org/datatype-draft"
     }
   shared-hyperlink.attrs.rel =
     attribute rel {
-      common.data.tokens
+      w:a-rel
     }
   shared-hyperlink.attrs.hreflang =
     attribute hreflang {
@@ -65,7 +68,7 @@ datatypes w = "http://whattf.org/datatype-draft"
   shared-hyperlink.attrs.ping =
     attribute ping {
       common.data.uris
-    } & v5only
+    } & v5only & nonW3C
 
 ## Emphatic Stress: <em>
 
@@ -171,6 +174,32 @@ datatypes w = "http://whattf.org/datatype-draft"
 		( common.inner.phrasing )
 
 	common.elem.phrasing |= b.elem
+
+## Struck Text: <s>
+
+	s.elem =
+		element s { s.inner & s.attrs }
+	s.attrs =
+		(	common.attrs
+		&	common.attrs.aria?
+		)
+	s.inner =
+		( common.inner.phrasing )
+
+	common.elem.phrasing |= s.elem
+
+## Underline: <u>
+
+	u.elem =
+		element u { u.inner & u.attrs }
+	u.attrs =
+		(	common.attrs
+		&	common.attrs.aria?
+		)
+	u.inner =
+		( common.inner.phrasing )
+
+	common.elem.phrasing |= u.elem
 
 ## Code Fragment: <code>
 
@@ -300,6 +329,17 @@ datatypes w = "http://whattf.org/datatype-draft"
 		( common.inner.phrasing )
 
 	common.elem.phrasing |= bdo.elem
+
+## Bidirectional Isolate: <bdi>
+
+	bdi.elem =
+		element bdi { bdi.inner & bdi.attrs }
+	bdi.attrs =
+		( common.attrs )
+	bdi.inner =
+		( common.inner.phrasing )
+
+	common.elem.phrasing |= bdi.elem
 
 ## Line Break: <br>
 

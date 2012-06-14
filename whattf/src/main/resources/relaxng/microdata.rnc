@@ -17,7 +17,7 @@ common.attrs.microdata =
 		}
 	common.attrs.microdata.itemprop =
 		attribute itemprop {
-			common.data.microdata-identifier
+			common.data.microdata-properties
 		}
 	common.attrs.microdata.itemscope =
 		attribute itemscope {
@@ -25,7 +25,7 @@ common.attrs.microdata =
 		}
 	common.attrs.microdata.itemtype =
 		attribute itemtype {
-			common.data.uri
+			common.data.uri.absolute
 		}
 	common.attrs.microdata.itemid =
 		attribute itemid {
@@ -33,6 +33,12 @@ common.attrs.microdata =
 		}
 
 common.attrs &= common.attrs.microdata
+
+a.attrs &= common.attrs.microdata
+area.attrs &= common.attrs.microdata
+base.attrs &= common.attrs.microdata
+
+## URL-valued Property Metadata: <link itemprop>
 
 	link.elem.phrasing =
 		element link { link.inner & link.phrasing.attrs }
@@ -47,7 +53,6 @@ common.attrs &= common.attrs.microdata
 		&	common.attrs.microdata.itemtype?
 		&	common.attrs.microdata.itemid?
 		&	shared-hyperlink.attrs.href
-		&	shared-hyperlink.attrs.rel
 		&	shared-hyperlink.attrs.hreflang?
 		&	shared-hyperlink.attrs.media?
 		&	shared-hyperlink.attrs.type?
@@ -55,6 +60,14 @@ common.attrs &= common.attrs.microdata
 		#	link.attrs.title included in common.attrs
 		)
 	common.elem.phrasing |= link.elem.phrasing
+
+## <link> element in head, extensions
+
+link.attrs.rel |= common.attrs.microdata.itemprop
+link.attrs &= common.attrs.microdata.itemref?
+link.attrs &= common.attrs.microdata.itemscope?
+link.attrs &= common.attrs.microdata.itemtype?
+link.attrs &= common.attrs.microdata.itemid?
 
 ## Property Metadata: <meta itemprop>
 

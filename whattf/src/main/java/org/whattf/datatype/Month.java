@@ -30,7 +30,7 @@ import org.relaxng.datatype.DatatypeException;
 /**
  * 
  * 
- * @version $Id: Month.java 232 2007-11-21 13:19:11Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public final class Month extends AbstractDatatype {

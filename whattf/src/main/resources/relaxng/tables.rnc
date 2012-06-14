@@ -50,11 +50,11 @@ datatypes w = "http://whattf.org/datatype-draft"
 		element table { table.inner & table.attrs }
 	table.attrs =
 		(	common.attrs
-		&	table.attrs.summary? # obsolete
+		&	table.attrs.border?
 		&	common.attrs.aria?
 		)
-		table.attrs.summary =
-			attribute summary {
+		table.attrs.border  =
+			attribute border {
 				string
 			}
 	table.inner =
@@ -221,4 +221,4 @@ datatypes w = "http://whattf.org/datatype-draft"
 		&	common.attrs.aria.implicit.th?
 		)
 	th.inner =
-		( common.inner.phrasing )
+		( common.inner.flow )

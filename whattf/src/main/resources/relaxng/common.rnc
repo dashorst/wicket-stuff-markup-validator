@@ -29,6 +29,9 @@ datatypes w = "http://whattf.org/datatype-draft"
 	## XML features that can't be serialized as HTML
 	nonHTMLizable = empty
 
+## features that are not part of the W3C HTML spec
+	nonW3C = empty
+
 # #####################################################################
 ##  Wildcards                                                         #
 # #####################################################################
@@ -138,7 +141,7 @@ common.attrs.basic =
 		common.attrs.xmlspace
 	common.attrs.xmlspace =
 		attribute xml:space {
-			string "preserve" # REVISIT this is not allowed per spec
+			string "preserve" | string "default"
 		} & XMLonly
 
 common.attrs.i18n =
@@ -147,7 +150,7 @@ common.attrs.i18n =
 	)
 	common.attrs.dir =
 		attribute dir {
-			w:string "ltr" | w:string "rtl"
+			w:string "ltr" | w:string "rtl" | w:string "auto"
 		}
 	# This lang definition is a hack for enviroments where
 	# the HTML5 parser maps lang to xml:lang.
@@ -292,10 +295,28 @@ common.attrs.other =
 	common.data.date-or-time =
 		w:date-or-time
 
+	common.data.date =
+		w:date
+
 ## IRIs
 
 	common.data.uri =
-		w:string "" | w:iri-ref
+		# allow either a non-empty IRI ref or zero or more HTML
+		# space characters (which are: space, tab, LF, FF, CR)
+		(	w:iri-ref
+		|	xsd:string {
+				pattern = "[ \x{0A}-\x{0D}]*"
+				# NOTE The range above incorrectly allows U+000B
+				# in addition to the HTML space characters; but
+				# that's not a problem in practice because HTML
+				# and XML parsers will both catch any U+000B
+				# and report an error for it before that pattern
+				# ever gets evaluated.
+		 	}
+		)
+
+	common.data.uri.non-empty =
+		w:iri-ref
 
 	common.data.uris =
 		list { w:iri-ref* }
@@ -351,13 +372,17 @@ common.attrs.other =
 	common.data.keylabellist =
 		w:keylabellist
 
-## Microdata Identifier
-  common.data.microdata-identifier =
-    w:microdata-identifier
+## Microdata Properties
+  common.data.microdata-properties =
+    list { w:microdata-property+ }
 
 ## Zero
   common.data.zero =
     w:zero
+
+## ECMAScript FunctionBody
+  common.data.functionbody =
+    w:functionbody
 
 # #####################################################################
 ##  WF2 Module Hook                                                   #

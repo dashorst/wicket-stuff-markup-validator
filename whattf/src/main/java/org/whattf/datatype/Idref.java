@@ -27,7 +27,7 @@ package org.whattf.datatype;
  * This datatype shall accept any string that consists of one or more characters 
  * and does not contain any whitespace characters.
  * <p>The ID-type of this datatype is IDREF.
- * @version $Id: Idref.java 323 2008-07-28 08:00:57Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public final class Idref extends Id {

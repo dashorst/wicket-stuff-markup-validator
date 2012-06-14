@@ -36,7 +36,7 @@ import org.relaxng.datatype.ValidationContext;
  * <code>Datatype</code> interface and leaves a new <code>checkValid</code> for 
  * subclasses to implement.
  * 
- * @version $Id: AbstractDatatype.java 563 2010-05-26 01:38:13Z sideshowbarker $
+ * @version $Id$
  * @author hsivonen
  */
 public abstract class AbstractDatatype implements Datatype {

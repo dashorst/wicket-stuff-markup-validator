@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Henri Sivonen
+ * Copyright (c) 2011 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"), 
@@ -22,48 +22,51 @@
 
 package org.whattf.datatype;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.RhinoException;
 import org.relaxng.datatype.DatatypeException;
 
-/**
- * This datatype shall accept any string that consists of one or more characters and 
- * contains at least one character that is not a whitespace character.
- * <p>The ID-type of this datatype is IDREFS.
- * @version $Id$
- * @author hsivonen
- */
-public final class Idrefs extends AbstractDatatype {
+public class FunctionBody extends AbstractDatatype {
 
     /**
      * The singleton instance.
      */
-    public static final Idrefs THE_INSTANCE = new Idrefs();
-    
-    /**
-     * Package-private constructor
-     */
-    private Idrefs() {
+    public static final FunctionBody THE_INSTANCE = new FunctionBody();
+
+    protected FunctionBody() {
         super();
     }
 
-    /**
-     * Checks that the value is a proper list of HTML5 ids.
-     * @param literal the value
-     * @param context ignored
-     * @throws DatatypeException if the value isn't valid
-     * @see org.relaxng.datatype.Datatype#checkValid(java.lang.String, org.relaxng.datatype.ValidationContext)
-     */
     public void checkValid(CharSequence literal) throws DatatypeException {
-        for (int i = 0; i < literal.length(); i++) {
-            char c = literal.charAt(i);
-            if (!isWhitespace(c)) {
-                return;
+        try {
+            Reader reader = new BufferedReader((new StringReader(
+                    "function(event){" + literal.toString() + "}")));
+            reader.mark(1);
+            try {
+                Context context = ContextFactory.getGlobal().enterContext();
+                context.setOptimizationLevel(0);
+                context.setLanguageVersion(Context.VERSION_1_6);
+                // -1 for lineno arg prevents Rhino from appending
+                // "(unnamed script#1)" to all error messages
+                context.compileReader(reader, null, -1, null);
+            } finally {
+                Context.exit();
             }
+        } catch (IOException e) {
+            throw newDatatypeException(e.getMessage());
+        } catch (RhinoException e) {
+            throw newDatatypeException(e.getMessage());
         }
-        throw newDatatypeException("An IDREFS value must contain at least one non-whitespace character.");
-    }   
-
-    @Override
-    public String getName() {
-        return "id references";
     }
+
+    @Override public String getName() {
+        return "ECMAScript FunctionBody";
+    }
+
 }

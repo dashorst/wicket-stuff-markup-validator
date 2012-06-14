@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * <a href='#datetime'><code>datetime</code></a>. This type requires seconds to be explicitly 
  * present.
  * 
- * @version $Id: DatetimeTz.java 232 2007-11-21 13:19:11Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public final class DatetimeTz extends AbstractDatetime {
@@ -48,7 +48,7 @@ public final class DatetimeTz extends AbstractDatetime {
     /**
      * The rexexp for this datatype.
      */
-    private static final Pattern THE_PATTERN = Pattern.compile("^([0-9]{4,})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(?:\\.[0-9]+)?(?:Z|(?:([+-][0-9]{2}):([0-9]{2})))$");
+    private static final Pattern THE_PATTERN = Pattern.compile("^([0-9]{4,})-([0-9]{2})-([0-9]{2})[T ]([0-9]{2}):([0-9]{2})(?::([0-9]{2})(?:\\.[0-9]{1,3})?)?(?:Z|(?:([+-][0-9]{2}):([0-9]{2})))$");
 
     /**
      * Constructor.

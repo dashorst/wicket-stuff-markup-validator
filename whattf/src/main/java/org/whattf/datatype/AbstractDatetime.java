@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2006 Henri Sivonen
+ * Copyright (c) 2010 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"), 
@@ -30,7 +31,7 @@ import org.relaxng.datatype.DatatypeException;
 /**
  * Superclass for various datetime datatypes. 
  * 
- * @version $Id: AbstractDatetime.java 231 2007-11-20 09:48:15Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 abstract class AbstractDatetime extends AbstractDatatype {
@@ -198,7 +199,7 @@ abstract class AbstractDatetime extends AbstractDatatype {
             }
         } else {
             throw newDatatypeException(
-                    "The literal did not satisfy the date format.");
+                    "The literal did not satisfy the " + getName() + " format.");
         }
     }
 

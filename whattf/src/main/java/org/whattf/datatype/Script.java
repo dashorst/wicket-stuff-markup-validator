@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Henri Sivonen
+ * Copyright (c) 2011 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"), 
@@ -22,49 +22,28 @@
 
 package org.whattf.datatype;
 
-import java.util.regex.Pattern;
+import org.relaxng.datatype.DatatypeException;
 
-/**
- * This datatype shall accept strings that conform to the format specified for
- * <a href='http://whatwg.org/specs/web-forms/current-work/#datetime-local'><code>datetime-local</code></a>
- * inputs in Web Forms 2.0.
- * <p>
- * This datatype must not accept the empty string.
- * 
- * @version $Id$
- * @author hsivonen
- */
-public final class DatetimeLocal extends AbstractDatetime {
-    
+public class Script extends CdoCdcPair {
+
     /**
      * The singleton instance.
      */
-    public static final DatetimeLocal THE_INSTANCE = new DatetimeLocal();
-    
-    /**
-     * The rexexp for this datatype.
-     */
-    private static final Pattern THE_PATTERN = Pattern.compile("^([0-9]{4,})-([0-9]{2})-([0-9]{2})[T ]([0-9]{2}):([0-9]{2})(?::([0-9]{2})(?:\\.[0-9]{1,3})?)?$");
+    public static final Script THE_INSTANCE = new Script();
 
-    /**
-     * Constructor.
-     */
-    private DatetimeLocal() {
+    protected Script() {
         super();
     }
-    
-    /**
-     * Returns the regexp for this datatype.
-     * 
-     * @return the regexp for this datatype
-     * @see org.whattf.datatype.AbstractDatetime#getPattern()
-     */
-    protected final Pattern getPattern() {
-        return THE_PATTERN;
+
+    @Override public void checkValid(CharSequence literal)
+            throws DatatypeException {
+        // FIXME This does not yet check for script-start and script-end.
+        super.checkValid(literal);
+        return;
     }
 
-    @Override
-    public String getName() {
-        return "local datetime";
+    @Override public String getName() {
+        return "embedded script content";
     }
+
 }
