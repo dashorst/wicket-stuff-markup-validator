@@ -116,9 +116,10 @@ public class ValidationReport implements ErrorHandler {
 		}
 		if (error.getMessage().contains(";")) {
 			int pos = error.getLocalizedMessage().indexOf(';');
-			sb.append(error.getLocalizedMessage().substring(0, pos));
+			String msg = error.getLocalizedMessage().substring(0, pos);
+			sb.append(Strings.escapeMarkup(msg));
 		} else
-			sb.append(error.getLocalizedMessage());
+			sb.append(Strings.escapeMarkup(error.getLocalizedMessage()));
 		sb.append("</div>\n");
 	}
 
