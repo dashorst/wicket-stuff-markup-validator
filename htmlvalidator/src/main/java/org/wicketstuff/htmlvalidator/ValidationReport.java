@@ -1,17 +1,23 @@
 package org.wicketstuff.htmlvalidator;
 
+import static org.wicketstuff.htmlvalidator.ValidatorUtils.cssFor;
+import static org.wicketstuff.htmlvalidator.ValidatorUtils.imgFor;
+import static org.wicketstuff.htmlvalidator.ValidatorUtils.jsFor;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.request.component.IRequestablePage;
-import org.apache.wicket.request.cycle.RequestCycle;
-import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.string.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 
 public class ValidationReport implements ErrorHandler {
+	private static final Logger log = LoggerFactory
+			.getLogger(ValidationReport.class);
 	private List<SAXParseException> parseErrors = new ArrayList<SAXParseException>();
 
 	private String doctype;
@@ -22,7 +28,10 @@ public class ValidationReport implements ErrorHandler {
 
 	public ValidationReport(IRequestablePage page, String markup,
 			DocType doctype) {
-		this.page = page.getClass().getName();
+		if (page != null)
+			this.page = page.getClass().getName();
+		else
+			this.page = "<unable to determine page>";
 		this.markup = markup;
 		this.lines = Strings.split(markup, '\n');
 		this.doctype = doctype.name(); // getIdentifier();
@@ -30,16 +39,27 @@ public class ValidationReport implements ErrorHandler {
 
 	@Override
 	public void error(SAXParseException exception) {
+		log.error(
+				"Line {} contains error at {}: {}",
+				new Object[] { exception.getLineNumber(),
+						exception.getColumnNumber(), exception.getMessage() });
 		parseErrors.add(exception);
 	}
 
 	@Override
 	public void fatalError(SAXParseException exception) {
+		log.error("Line {} contains fatal error at {}: {}", new Object[] {
+				exception.getLineNumber(), exception.getColumnNumber(),
+				exception.getMessage() });
 		parseErrors.add(exception);
 	}
 
 	@Override
 	public void warning(SAXParseException exception) {
+		log.warn(
+				"Line {} contains warning at {}: {}",
+				new Object[] { exception.getLineNumber(),
+						exception.getColumnNumber(), exception.getMessage() });
 		parseErrors.add(exception);
 	}
 
@@ -52,42 +72,28 @@ public class ValidationReport implements ErrorHandler {
 		sb.append("\t" + cssFor("prettify/prettify.css") + "\n");
 		sb.append("\t" + cssFor("validator.css") + "\n");
 		sb.append("\t" + jsFor("prettify/prettify.js") + "\n");
+
 		sb.append("\t" + "<script>\n");
 		sb.append("\t\t" + "if(window.addEventListener) {\n");
-		sb.append("\t\t\t"
-				+ "window.addEventListener('load',function (event) { prettyPrint() },false);\n");
-		sb.append("\t\t" + "}\n");
-		sb.append("\t\t" + "else {\n");
-		sb.append("\t\t\t"
-				+ "window.attachEvent('onload',function (event) { prettyPrint() });\n");
+		sb.append("\t\t\twindow.addEventListener('load',function (event) { prettyPrint() },false);\n");
+		sb.append("\t\t" + "} else {\n");
+		sb.append("\t\t\twindow.attachEvent('onload',function (event) { prettyPrint() });\n");
 		sb.append("\t\t" + "}\n");
 		sb.append("\t" + "</script>\n");
+
 		return sb.toString();
-	}
-
-	private String cssFor(String filename) {
-		return "<link rel=\"stylesheet\" type=\"text/css\" href=\""
-				+ urlFor(filename) + "\" />";
-	}
-
-	private String jsFor(String filename) {
-		return "<script src=\"" + urlFor(filename) + "\"></script>";
-	}
-
-	private String urlFor(String filename) {
-		RequestCycle requestCycle = RequestCycle.get();
-		PackageResourceReference reference = new PackageResourceReference(
-				ValidationReport.class, filename);
-		CharSequence url = requestCycle.urlFor(reference, null);
-		return url.toString();
 	}
 
 	public String getBodyMarkup() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<div id=\"validationreportwindow\" class=\"validation-report\">");
+		sb.append("<div id=\"validationreportwindow\" class=\"validation-report\""
+				+ (isValid() ? " style=\"display:none\"" : "") + ">");
 		sb.append("<div class=\"validation-header\">\n");
 		sb.append("<button class=\"close\" onclick=\"document.getElementById('validationreportwindow').style.display='none';\">×</button>\n");
-		sb.append("<h3>Markup errors found in generated document</h3>\n");
+		if (isValid())
+			sb.append("<h3>Generated document is valid " + doctype + "</h3>\n");
+		else
+			sb.append("<h3>Markup errors found in generated document</h3>\n");
 		sb.append("</div>\n");
 		sb.append("<div class=\"validation-content\">\n");
 		generateSourceView(sb);
@@ -96,6 +102,10 @@ public class ValidationReport implements ErrorHandler {
 		generateFooter(sb);
 		sb.append("</div>\n");
 		sb.append("</div>");
+		sb.append("<a class=\"validationreportbadge\" href=\"#\" onclick=\"document.getElementById('validationreportwindow').style.display='block';\" title=\"Content is "
+				+ (isValid() ? "valid" : "invalid") + " " + doctype + "\">");
+		sb.append(imgFor("HTML5_Badge_32.png").toString());
+		sb.append("</a>");
 		return sb.toString();
 	}
 
@@ -153,10 +163,20 @@ public class ValidationReport implements ErrorHandler {
 
 	private void generateHeader(StringBuilder sb) {
 		sb.append("<div class=\"control-group\">\n");
-		sb.append("<label class=\"control-label\" for=\"validationReportPage\">Offending page:</label>\n");
+		sb.append("<label class=\"control-label\" for=\"validationReportPage\">Validated page:</label>\n");
 		sb.append("<div class=\"controls\">");
 		sb.append("<input type=\"text\" class=\"\" readonly id=\"validationReportPage\" value=\""
 				+ page + "\"/>");
+		sb.append("</div>\n");
+		sb.append("</div>\n");
+
+		sb.append("<div class=\"control-group\">\n");
+		sb.append("<label class=\"control-label\" for=\"validationReportResult\">Validation result:</label>\n");
+		sb.append("<div class=\"controls\">");
+		sb.append("<input type=\"text\" class=\""
+				+ (isValid() ? "validation-success" : "validation-error")
+				+ "\" readonly id=\"validationReportResult\" value=\""
+				+ (isValid() ? "Valid" : "Invalid") + " " + doctype + "\"/>");
 		sb.append("</div>\n");
 		sb.append("</div>\n");
 
@@ -167,7 +187,7 @@ public class ValidationReport implements ErrorHandler {
 				+ doctype + "\"/>");
 		sb.append("</div>\n");
 		sb.append("</div>\n");
-		
+
 		sb.append("<div class=\"control-group\">\n");
 		sb.append("<label class=\"control-label\" for=\"validationReportLines\">Lines:</label>\n");
 		sb.append("<div class=\"controls\">");
@@ -205,7 +225,11 @@ public class ValidationReport implements ErrorHandler {
 	}
 
 	private void generateLines(StringBuilder sb) {
-		sb.append("<td><pre class=\"lines prettyprint\">");
+		Tag td = new Tag("td");
+		Tag pre = new Tag("pre").attr("class", "lines", "prettyprint");
+
+		sb.append(td.getOpenTag());
+		sb.append(pre.getOpenTag());
 		for (int i = 1; i <= lines.length; i++) {
 			String line = lines[i - 1];
 
@@ -215,36 +239,39 @@ public class ValidationReport implements ErrorHandler {
 				generateCodeLine(sb, line, i);
 			}
 		}
-		sb.append("</pre></td>\n");
+		sb.append(pre.getCloseTag());
+		sb.append(td.getCloseTag());
+		sb.append("\n");
 	}
 
 	private void generateErrorLine(StringBuilder sb, String line, int i) {
 		SAXParseException error = getError(i);
 
-		sb.append("<code ");
+		Tag code = new Tag("code");
+
 		if (hasError(i)) {
-			sb.append(" class=\"error\"");
-			sb.append(" title=\"");
-			sb.append(Strings.escapeMarkup(error.getMessage()));
-			sb.append("\"");
+			code.attr("class", "error");
+			code.attr("title", Strings.escapeMarkup(error.getMessage()));
 		} else {
-			sb.append("class=\"language-xml\"");
+			code.attr("class", "language-xml");
 		}
-		sb.append(">");
-		sb.append(Strings.escapeMarkup(line));
-		if (line.trim().isEmpty())
-			sb.append("&nbsp;\n");
-		sb.append("</code>");
+		if (Strings.isEmpty(line))
+			code.setBody("&nbsp;");
+		else
+			code.setBody(Strings.escapeMarkup(line));
+
+		sb.append(code.toString());
 	}
 
 	private void generateCodeLine(StringBuilder sb, String line, int i) {
-		sb.append("<code ");
-		sb.append("class=\"language-xml\"");
-		sb.append(">");
-		sb.append(Strings.escapeMarkup(line));
-		if (line.trim().isEmpty())
-			sb.append("&nbsp;\n");
-		sb.append("</code>");
+		Tag code = new Tag("code");
+		code.attr("class", "language-xml");
+		if (Strings.isEmpty(line))
+			code.setBody("&nbsp;");
+		else
+			code.setBody(Strings.escapeMarkup(line));
+
+		sb.append(code.toString());
 	}
 
 	private SAXParseException getError(int i) {

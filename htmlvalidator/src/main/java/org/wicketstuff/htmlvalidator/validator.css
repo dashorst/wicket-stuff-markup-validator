@@ -160,6 +160,14 @@
 	color: #08C;
 	text-decoration: none;
 }
+.validation-report .validation-error {
+	color: #B94A48;
+	background-color: #F2DEDE;
+}
+.validation-report .validation-success {
+	color: #468847;
+	background-color: #DFF0D8;
+}
 .markup-error {
 	color: #B94A48;
 	background-color: #F2DEDE;
@@ -266,4 +274,10 @@ td.linenrs {
   .validation-report pre .tag, code .tag { color: #006; font-weight: bold; }
   .validation-report pre .atn, code .atn { color: #404; }
   .validation-report pre .atv, code .atv { color: #060; }
+}
+
+a.validationreportbadge {
+	position : fixed;
+	bottom : 0;
+	left : 25%;
 }
