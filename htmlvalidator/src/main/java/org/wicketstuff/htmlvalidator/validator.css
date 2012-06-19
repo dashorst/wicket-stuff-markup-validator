@@ -279,5 +279,15 @@ td.linenrs {
 a.validationreportbadge {
 	position : fixed;
 	bottom : 0;
-	left : 25%;
+	left : 50%;
+	margin-left : -16px;
+	margin-bottom : -16px;
+	transition : margin-bottom 200ms;
+	-moz-transition: margin-bottom 200ms;
+	-o-transition: margin-bottom 200ms;
+	-webkit-transition: margin-bottom 200ms;
+}
+
+a.validationreportbadge:hover {
+	margin-bottom : 0px;
 }
