@@ -10,6 +10,7 @@
 </define>
 
 <define name="script.attlist">
+  <ref name="id.attrib"/>
   <optional>
     <attribute name="charset">
       <ref name="Charset.datatype"/>
