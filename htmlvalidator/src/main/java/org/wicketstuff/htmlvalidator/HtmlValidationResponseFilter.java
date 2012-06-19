@@ -1,11 +1,8 @@
 package org.wicketstuff.htmlvalidator;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.request.IRequestHandler;
@@ -18,12 +15,10 @@ import org.apache.wicket.util.string.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 import com.thaiopensource.util.PropertyMapBuilder;
-import com.thaiopensource.validate.IncorrectSchemaException;
 import com.thaiopensource.validate.Schema;
 import com.thaiopensource.validate.ValidateProperty;
 import com.thaiopensource.validate.Validator;
