@@ -1,4 +1,4 @@
-package org.wicketstuff.htmlvalidator.examples.tester;
+package org.wicketstuff.htmlvalidator.tester;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.util.tester.WicketTester;
@@ -19,6 +19,12 @@ public class MarkupTest {
 	@Test
 	public void scriptId() {
 		tester.startPage(new ScriptId());
+		assertValid(DocType.XHTML10_STRICT);
+	}
+
+	@Test
+	public void inputFile() {
+		tester.startPage(new InputTypes());
 		assertValid(DocType.XHTML10_STRICT);
 	}
 

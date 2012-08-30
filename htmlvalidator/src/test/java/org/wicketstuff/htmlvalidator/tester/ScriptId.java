@@ -1,4 +1,4 @@
-package org.wicketstuff.htmlvalidator.examples.tester;
+package org.wicketstuff.htmlvalidator.tester;
 
 import org.apache.wicket.markup.html.WebPage;
 
