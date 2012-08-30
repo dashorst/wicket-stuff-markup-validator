@@ -28,8 +28,8 @@
 			<artifactId>wicketstuff-isorelax</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.sourceforge.saxon</groupId>
-			<artifactId>saxon</artifactId>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>Saxon-HE</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>xml-resolver</groupId>

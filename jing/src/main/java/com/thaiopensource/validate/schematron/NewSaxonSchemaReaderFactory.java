@@ -1,10 +1,10 @@
 package com.thaiopensource.validate.schematron;
 
-import net.sf.saxon.FeatureKeys;
-import net.sf.saxon.TransformerFactoryImpl;
-
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
+
+import net.sf.saxon.TransformerFactoryImpl;
+import net.sf.saxon.lib.FeatureKeys;
 
 public class NewSaxonSchemaReaderFactory extends SchematronSchemaReaderFactory {
   public SAXTransformerFactory newTransformerFactory() {
