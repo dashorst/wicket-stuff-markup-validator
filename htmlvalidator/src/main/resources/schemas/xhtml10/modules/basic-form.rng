@@ -106,7 +106,10 @@
     <value>radio</value>
     <value>submit</value>
     <value>reset</value>
+    <value>file</value>
     <value>hidden</value>
+    <value>image</value>
+    <value>button</value>
   </choice>
 </define>
 
