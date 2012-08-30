@@ -165,10 +165,7 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 				onInvalidMarkup(responseBuffer, report);
 			}
 		} catch (Exception e) {
-			log.error(
-					"Error validating markup from "
-							+ responsePage.getClass().getName() + ": "
-							+ e.getMessage(), e);
+			log.error(e.toString(), e);
 		}
 		return responseBuffer;
 	}
