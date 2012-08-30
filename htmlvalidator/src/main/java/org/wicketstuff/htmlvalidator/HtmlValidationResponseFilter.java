@@ -5,10 +5,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.core.request.handler.IPageRequestHandler;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
-import org.apache.wicket.request.handler.IPageRequestHandler;
 import org.apache.wicket.response.filter.IResponseFilter;
 import org.apache.wicket.util.string.AppendingStringBuffer;
 import org.apache.wicket.util.string.Strings;
@@ -130,13 +131,18 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 
 		String detectionString = getFirstCharacters(response, 128);
 
-		log.info("No or unknown DOCTYPE detected for page {}: {}", responsePage
-				.getClass().getName(), detectionString);
+		if (responsePage != null) {
+			log.info("No or unknown DOCTYPE detected for page {}: {}",
+					responsePage.getClass().getName(), detectionString);
+		} else {
+			log.info("No or unknown DOCTYPE detected: {}", detectionString);
+		}
 	}
 
 	public AppendingStringBuffer filter(AppendingStringBuffer responseBuffer) {
 		IRequestablePage responsePage = getResponsePage();
-		if (responsePage != null && !(responsePage instanceof Page)) {
+		if (responsePage != null && !(responsePage instanceof Page)
+				|| RequestCycle.get().find(AjaxRequestTarget.class) != null) {
 			return responseBuffer;
 		}
 
