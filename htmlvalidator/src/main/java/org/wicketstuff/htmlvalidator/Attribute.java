@@ -1,7 +1,5 @@
 package org.wicketstuff.htmlvalidator;
 
-import org.apache.wicket.util.string.Strings;
-
 class Attribute implements Comparable<Attribute> {
 	private final String name;
 	private final CharSequence value;
