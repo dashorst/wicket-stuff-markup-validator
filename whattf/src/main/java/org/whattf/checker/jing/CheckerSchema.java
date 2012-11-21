@@ -25,9 +25,12 @@ package org.whattf.checker.jing;
 import org.whattf.checker.Checker;
 import org.whattf.checker.ConformingButObsoleteWarner;
 import org.whattf.checker.DebugChecker;
+import org.whattf.checker.MicrodataChecker;
+import org.whattf.checker.RdfaLiteChecker;
 import org.whattf.checker.NormalizationChecker;
 import org.whattf.checker.TextContentChecker;
 import org.whattf.checker.UncheckedSubtreeWarner;
+import org.whattf.checker.UnsupportedFeatureChecker;
 import org.whattf.checker.UsemapChecker;
 import org.whattf.checker.XmlPiChecker;
 import org.whattf.checker.schematronequiv.Assertions;
@@ -56,7 +59,13 @@ public class CheckerSchema implements Schema {
     public static final CheckerSchema CONFORMING_BUT_OBSOLETE_WARNER = new CheckerSchema(PropertyMap.EMPTY, ConformingButObsoleteWarner.class);
     
     public static final CheckerSchema XML_PI_CHECKER = new CheckerSchema(PropertyMap.EMPTY, XmlPiChecker.class);
-    
+
+    public static final CheckerSchema UNSUPPORTED_CHECKER = new CheckerSchema(PropertyMap.EMPTY, UnsupportedFeatureChecker.class);
+
+    public static final CheckerSchema MICRODATA_CHECKER = new CheckerSchema(PropertyMap.EMPTY, MicrodataChecker.class);
+
+    public static final CheckerSchema RDFALITE_CHECKER = new CheckerSchema(PropertyMap.EMPTY, RdfaLiteChecker.class);
+
     private final PropertyMap properties;
     
     private final Class<? extends Checker> klazz;

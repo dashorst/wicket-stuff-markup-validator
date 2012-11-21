@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 Mozilla Foundation
+ * Copyright (c) 2011 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"), 
@@ -20,28 +20,24 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package org.whattf.datatype;
+package org.whattf.checker;
 
-import org.relaxng.datatype.DatatypeException;
+import org.xml.sax.Locator;
 
-public class Color extends AbstractDatatype {
-    /**
-     * The singleton instance.
-     */
-    public static final Color THE_INSTANCE = new Color();
+public class TaintableLocatorImpl extends LocatorImpl {
 
-    public Color() {
-        super();
+    private boolean tainted;
+    
+    public TaintableLocatorImpl(Locator locator) {
+        super(locator);
+        this.tainted = false;
+    }
+    
+    public void markTainted() {
+        tainted = true;
     }
 
-    @Override
-    public void checkValid(CharSequence literal) throws DatatypeException {
-        // TODO Auto-generated method stub
+    public boolean isTainted() {
+        return tainted;
     }
-
-    @Override
-    public String getName() {
-        return "color";
-    }
-
 }

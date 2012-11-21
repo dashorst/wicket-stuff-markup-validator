@@ -33,18 +33,14 @@ public class ConformingButObsoleteWarner extends Checker {
     @Override public void startElement(String uri, String localName,
             String name, Attributes atts) throws SAXException {
         if ("http://www.w3.org/1999/xhtml" == uri) {
-            if ("meta" == localName) {
-                if (lowerCaseLiteralEqualsIgnoreAsciiCaseString("content-language", atts.getValue("", "http-equiv"))) {
-                    warn("The \u201CContent-Language\u201D state is obsolete. Consider specifying the language on the root element instead.");
-                }
-            } else if ("img" == localName) {
+            if ("img" == localName) {
                 if (atts.getIndex("", "border") > -1) {
                     warn("The \u201Cborder\u201D attribute is obsolete. Consider specifying \u201Cimg { border: 0; }\u201D in CSS instead.");
                 }
             } else if ("script" == localName) {
-                if (lowerCaseLiteralEqualsIgnoreAsciiCaseString("javascript", atts.getValue("", "language"))) {
+                if (AttributeUtil.lowerCaseLiteralEqualsIgnoreAsciiCaseString("javascript", atts.getValue("", "language"))) {
                     String type = atts.getValue("", "type");
-                    if (type == null || lowerCaseLiteralEqualsIgnoreAsciiCaseString("text/javascript", type)) {
+                    if (type == null || AttributeUtil.lowerCaseLiteralEqualsIgnoreAsciiCaseString("text/javascript", type)) {
                         warn("The \u201Clanguage\u201D attribute on the \u201Cscript\u201D element is obsolete. You can safely omit it.");
                     }
                 }
@@ -52,33 +48,7 @@ public class ConformingButObsoleteWarner extends Checker {
                 if (atts.getIndex("", "name") > -1) {
                     warn("The \u201Cname\u201D attribute is obsolete. Consider putting an \u201Cid\u201D attribute on the nearest container instead.");
                 }
-            } else if ("table" == localName) {
-                if (atts.getIndex("", "summary") > -1) {
-                    warn("The \u201Csummary\u201D attribute is obsolete. Consider describing the structure of complex tables in \u201C<caption>\u201D or in a paragraph and pointing to the paragraph using the \u201Caria-describedby\u201D attribute.");
-                }
             }
         }
-    }
-
-    private static boolean lowerCaseLiteralEqualsIgnoreAsciiCaseString(String lowerCaseLiteral,
-            String string) {
-        if (string == null) {
-            return false;
-        }
-        if (lowerCaseLiteral.length() != string.length()) {
-            return false;
-        }
-        for (int i = 0; i < lowerCaseLiteral.length(); i++) {
-            char c0 = lowerCaseLiteral.charAt(i);
-            char c1 = string.charAt(i);
-            if (c1 >= 'A' && c1 <= 'Z') {
-                c1 += 0x20;
-            }
-            if (c0 != c1) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
+    }    
 }

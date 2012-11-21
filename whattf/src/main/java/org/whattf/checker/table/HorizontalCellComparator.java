@@ -27,7 +27,7 @@ import java.util.Comparator;
 /**
  * Compares cells using their <code>left</code> field. The cells can never be equal.
  * 
- * @version $Id: HorizontalCellComparator.java 169 2007-05-25 07:21:55Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 final class HorizontalCellComparator implements Comparator<Cell> {

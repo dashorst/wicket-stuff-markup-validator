@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
  * Checks XHTML table integrity: overlapping cells, spanning past the end 
  * of row group, etc.
  * 
- * @version $Id: TableChecker.java 169 2007-05-25 07:21:55Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public final class TableChecker extends Checker {

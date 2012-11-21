@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2009 Mozilla Foundation
+ * Copyright (c) 2008-2011 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"), 
@@ -33,6 +33,7 @@ import java.util.Arrays;
 import org.whattf.checker.AttributeUtil;
 import org.whattf.checker.Checker;
 import org.whattf.checker.LocatorImpl;
+import org.whattf.checker.TaintableLocatorImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -87,16 +88,44 @@ public class Assertions extends Checker {
         return true;
     }
 
+    private static final String trimSpaces(String str) {
+        return trimLeadingSpaces(trimTrailingSpaces(str));
+    }
+
+    private static final String trimLeadingSpaces(String str) {
+        if (str == null) {
+            return null;
+        }
+        for (int i = str.length(); i > 0; --i) {
+            char c = str.charAt(str.length() - i);
+            if (!(' ' == c || '\t' == c || '\n' == c || '\f' == c || '\r' == c)) {
+                return str.substring(str.length() - i, str.length());
+            }
+        }
+        return "";
+    }
+
+    private static final String trimTrailingSpaces(String str) {
+        if (str == null) {
+            return null;
+        }
+        for (int i = str.length() - 1; i >= 0; --i) {
+            char c = str.charAt(i);
+            if (!(' ' == c || '\t' == c || '\n' == c || '\f' == c || '\r' == c)) {
+                return str.substring(0, i + 1);
+            }
+        }
+        return "";
+    }
+
     private static final Map<String, String> OBSOLETE_ELEMENTS = new HashMap<String, String>();
 
     static {
         OBSOLETE_ELEMENTS.put("center", "Use CSS instead.");
         OBSOLETE_ELEMENTS.put("font", "Use CSS instead.");
         OBSOLETE_ELEMENTS.put("big", "Use CSS instead.");
-        OBSOLETE_ELEMENTS.put("s", "Use CSS instead.");
         OBSOLETE_ELEMENTS.put("strike", "Use CSS instead.");
         OBSOLETE_ELEMENTS.put("tt", "Use CSS instead.");
-        OBSOLETE_ELEMENTS.put("u", "Use CSS instead.");
         OBSOLETE_ELEMENTS.put("acronym",
                 "Use the \u201Cabbr\u201D element instead.");
         OBSOLETE_ELEMENTS.put("dir", "Use the \u201Cul\u201D element instead.");
@@ -244,7 +273,7 @@ public class Assertions extends Checker {
         OBSOLETE_STYLE_ATTRS.put("background", new String[] { "body" });
         OBSOLETE_STYLE_ATTRS.put("bgcolor", new String[] { "table", "tr", "td",
                 "th", "body" });
-        OBSOLETE_STYLE_ATTRS.put("border", new String[] { "table", "object" });
+        OBSOLETE_STYLE_ATTRS.put("border", new String[] { "object" });
         OBSOLETE_STYLE_ATTRS.put("cellpadding", new String[] { "table" });
         OBSOLETE_STYLE_ATTRS.put("cellspacing", new String[] { "table" });
         OBSOLETE_STYLE_ATTRS.put("char", new String[] { "col", "colgroup",
@@ -272,7 +301,7 @@ public class Assertions extends Checker {
         OBSOLETE_STYLE_ATTRS.put("scrolling", new String[] { "iframe" });
         OBSOLETE_STYLE_ATTRS.put("size", new String[] { "hr" });
         OBSOLETE_STYLE_ATTRS.put("text", new String[] { "body" });
-        OBSOLETE_STYLE_ATTRS.put("type", new String[] { "li", "ol", "ul" });
+        OBSOLETE_STYLE_ATTRS.put("type", new String[] { "li", "ul" });
         OBSOLETE_STYLE_ATTRS.put("valign", new String[] { "col", "colgroup",
                 "tbody", "td", "tfoot", "th", "thead", "tr" });
         OBSOLETE_STYLE_ATTRS.put("vlink", new String[] { "body" });
@@ -282,8 +311,9 @@ public class Assertions extends Checker {
     }
 
     private static final String[] SPECIAL_ANCESTORS = { "a", "address",
-            "button", "caption", "dfn", "footer", "form", "header", "label",
-            "map", "noscript", "time", "progress", "meter" };
+            "button", "caption", "dfn", "dt", "figcaption", "figure", "footer",
+            "form", "header", "label", "map", "noscript", "th", "time",
+            "progress", "meter" };
 
     private static int specialAncestorNumber(String name) {
         for (int i = 0; i < SPECIAL_ANCESTORS.length; i++) {
@@ -330,6 +360,34 @@ public class Assertions extends Checker {
         registerProhibitedAncestor("address", "header");
         registerProhibitedAncestor("header", "footer");
         registerProhibitedAncestor("footer", "footer");
+        registerProhibitedAncestor("dt", "header");
+        registerProhibitedAncestor("dt", "footer");
+        registerProhibitedAncestor("dt", "article");
+        registerProhibitedAncestor("dt", "aside");
+        registerProhibitedAncestor("dt", "nav");
+        registerProhibitedAncestor("dt", "section");
+        registerProhibitedAncestor("dt", "h1");
+        registerProhibitedAncestor("dt", "h2");
+        registerProhibitedAncestor("dt", "h2");
+        registerProhibitedAncestor("dt", "h3");
+        registerProhibitedAncestor("dt", "h4");
+        registerProhibitedAncestor("dt", "h5");
+        registerProhibitedAncestor("dt", "h6");
+        registerProhibitedAncestor("dt", "hgroup");
+        registerProhibitedAncestor("th", "header");
+        registerProhibitedAncestor("th", "footer");
+        registerProhibitedAncestor("th", "article");
+        registerProhibitedAncestor("th", "aside");
+        registerProhibitedAncestor("th", "nav");
+        registerProhibitedAncestor("th", "section");
+        registerProhibitedAncestor("th", "h1");
+        registerProhibitedAncestor("th", "h2");
+        registerProhibitedAncestor("th", "h2");
+        registerProhibitedAncestor("th", "h3");
+        registerProhibitedAncestor("th", "h4");
+        registerProhibitedAncestor("th", "h5");
+        registerProhibitedAncestor("th", "h6");
+        registerProhibitedAncestor("th", "hgroup");
         registerProhibitedAncestor("address", "footer");
         registerProhibitedAncestor("address", "h1");
         registerProhibitedAncestor("address", "h2");
@@ -361,6 +419,10 @@ public class Assertions extends Checker {
     private static final int A_BUTTON_MASK = (1 << specialAncestorNumber("a"))
             | (1 << specialAncestorNumber("button"));
 
+    private static final int FIGCAPTION_MASK = (1 << specialAncestorNumber("figcaption"));
+
+    private static final int FIGURE_MASK = (1 << specialAncestorNumber("figure"));
+
     private static final int MAP_MASK = (1 << specialAncestorNumber("map"));
 
     private static final int HREF_MASK = (1 << 30);
@@ -383,6 +445,9 @@ public class Assertions extends Checker {
         registerRequiredParentRole("menu", "menuitem");
         registerRequiredParentRole("menu", "menuitemcheckbox");
         registerRequiredParentRole("menu", "menuitemradio");
+        registerRequiredParentRole("menubar", "menuitem");
+        registerRequiredParentRole("menubar", "menuitemcheckbox");
+        registerRequiredParentRole("menubar", "menuitemradio");
         registerRequiredParentRole("tablist", "tab");
         registerRequiredParentRole("tree", "treeitem");
         registerRequiredParentRole("list", "listitem");
@@ -415,6 +480,9 @@ public class Assertions extends Checker {
         registerAllowedChildRole("menu", "menuitem");
         registerAllowedChildRole("menu", "menuitemcheckbox");
         registerAllowedChildRole("menu", "menuitemradio");
+        registerAllowedChildRole("menubar", "menuitem");
+        registerAllowedChildRole("menubar", "menuitemcheckbox");
+        registerAllowedChildRole("menubar", "menuitemradio");
         registerAllowedChildRole("tree", "treeitem");
         registerAllowedChildRole("list", "listitem");
         registerAllowedChildRole("radiogroup", "radio");
@@ -484,11 +552,35 @@ public class Assertions extends Checker {
 
         private final String forAttr;
 
+        private Set<Locator> imagesLackingAlt = new HashSet<Locator>();
+
+        private Locator nonEmptyOption = null;
+
         private boolean children = false;
 
         private boolean selectedOptions = false;
 
         private boolean labeledDescendants = false;
+
+        private boolean trackDescendants = false;
+
+        private boolean textNodeFound = false;
+
+        private boolean imgFound = false;
+
+        private boolean embeddedContentFound = false;
+
+        private boolean figcaptionNeeded = false;
+
+        private boolean figcaptionContentFound = false;
+
+        private boolean optionNeeded = false;
+
+        private boolean optionFound = false;
+
+        private boolean noValueOptionFound = false;
+
+        private boolean emptyValueOptionFound = false;
 
         /**
          * @param ancestorMask
@@ -578,6 +670,25 @@ public class Assertions extends Checker {
         }
 
         /**
+         * Returns the trackDescendants.
+         * 
+         * @return the trackDescendants
+         */
+        public boolean isTrackDescendant() {
+            return trackDescendants;
+        }
+
+        /**
+         * Sets the trackDescendants.
+         * 
+         * @param trackDescendants
+         *            the trackDescendants to set
+         */
+        public void setTrackDescendants() {
+            this.trackDescendants = true;
+        }
+
+        /**
          * Returns the role.
          * 
          * @return the role
@@ -603,6 +714,183 @@ public class Assertions extends Checker {
         public String getForAttr() {
             return forAttr;
         }
+
+        /**
+         * Returns the textNodeFound.
+         * 
+         * @return the textNodeFound
+         */
+        public boolean hasTextNode() {
+            return textNodeFound;
+        }
+
+        /**
+         * Sets the textNodeFound.
+         */
+        public void setTextNodeFound() {
+            this.textNodeFound = true;
+        }
+
+        /**
+         * Returns the imgFound.
+         * 
+         * @return the imgFound
+         */
+        public boolean hasImg() {
+            return imgFound;
+        }
+
+        /**
+         * Sets the imgFound.
+         */
+        public void setImgFound() {
+            this.imgFound = true;
+        }
+
+        /**
+         * Returns the embeddedContentFound.
+         * 
+         * @return the embeddedContentFound
+         */
+        public boolean hasEmbeddedContent() {
+            return embeddedContentFound;
+        }
+
+        /**
+         * Sets the embeddedContentFound.
+         */
+        public void setEmbeddedContentFound() {
+            this.embeddedContentFound = true;
+        }
+
+        /**
+         * Returns the figcaptionNeeded.
+         * 
+         * @return the figcaptionNeeded
+         */
+        public boolean needsFigcaption() {
+            return figcaptionNeeded;
+        }
+
+        /**
+         * Sets the figcaptionNeeded.
+         */
+        public void setFigcaptionNeeded() {
+            this.figcaptionNeeded = true;
+        }
+
+        /**
+         * Returns the figcaptionContentFound.
+         * 
+         * @return the figcaptionContentFound
+         */
+        public boolean hasFigcaptionContent() {
+            return figcaptionContentFound;
+        }
+
+        /**
+         * Sets the figcaptionContentFound.
+         */
+        public void setFigcaptionContentFound() {
+            this.figcaptionContentFound = true;
+        }
+
+        /**
+         * Returns the imagesLackingAlt
+         * 
+         * @return the imagesLackingAlt
+         */
+        public Set<Locator> getImagesLackingAlt() {
+            return imagesLackingAlt;
+        }
+
+        /**
+         * Adds to the imagesLackingAlt
+         */
+        public void addImageLackingAlt(Locator locator) {
+            this.imagesLackingAlt.add(locator);
+        }
+
+        /**
+         * Returns the optionNeeded.
+         * 
+         * @return the optionNeeded
+         */
+        public boolean isOptionNeeded() {
+            return optionNeeded;
+        }
+
+        /**
+         * Sets the optionNeeded.
+         */
+        public void setOptionNeeded() {
+            this.optionNeeded = true;
+        }
+
+        /**
+         * Returns the optionFound.
+         * 
+         * @return the optionFound
+         */
+        public boolean hasOption() {
+            return optionFound;
+        }
+
+        /**
+         * Sets the optionFound.
+         */
+        public void setOptionFound() {
+            this.optionFound = true;
+        }
+
+        /**
+         * Returns the noValueOptionFound.
+         * 
+         * @return the noValueOptionFound
+         */
+        public boolean hasNoValueOption() {
+            return noValueOptionFound;
+        }
+
+        /**
+         * Sets the noValueOptionFound.
+         */
+        public void setNoValueOptionFound() {
+            this.noValueOptionFound = true;
+        }
+
+        /**
+         * Returns the emptyValueOptionFound.
+         * 
+         * @return the emptyValueOptionFound
+         */
+        public boolean hasEmptyValueOption() {
+            return emptyValueOptionFound;
+        }
+
+        /**
+         * Sets the emptyValueOptionFound.
+         */
+        public void setEmptyValueOptionFound() {
+            this.emptyValueOptionFound = true;
+        }
+
+        /**
+         * Returns the nonEmptyOption.
+         * 
+         * @return the nonEmptyOption
+         */
+        public Locator nonEmptyOptionLocator() {
+            return nonEmptyOption;
+        }
+
+        /**
+         * Sets the nonEmptyOption.
+         */
+        public void setNonEmptyOption(Locator locator) {
+            this.nonEmptyOption = locator;
+        }
+
     }
 
     private StackNode[] stack;
@@ -635,6 +923,8 @@ public class Assertions extends Checker {
 
     private Map<StackNode, Locator> openLabels = new HashMap<StackNode, Locator>();
 
+    private Map<StackNode, TaintableLocatorImpl> openMediaElements = new HashMap<StackNode, TaintableLocatorImpl>();
+
     private Map<StackNode, Locator> openActiveDescendants = new HashMap<StackNode, Locator>();
 
     private LinkedHashSet<IdrefLocator> contextmenuReferences = new LinkedHashSet<IdrefLocator>();
@@ -652,6 +942,8 @@ public class Assertions extends Checker {
     private LinkedHashSet<IdrefLocator> ariaReferences = new LinkedHashSet<IdrefLocator>();
 
     private Set<String> allIds = new HashSet<String>();
+
+    private int currentFigurePtr;
 
     /**
      * @see org.whattf.checker.Checker#endDocument()
@@ -722,6 +1014,40 @@ public class Assertions extends Checker {
         Locator locator = null;
         openSingleSelects.remove(node);
         openLabels.remove(node);
+        openMediaElements.remove(node);
+        if ("http://www.w3.org/1999/xhtml" == uri) {
+            if ("figure" == localName) {
+                if ((node.needsFigcaption() && !node.hasFigcaptionContent())
+                        || node.hasTextNode() || node.hasEmbeddedContent()) {
+                    for (Locator imgLocator : node.getImagesLackingAlt()) {
+                        err("An \u201Cimg\u201D element must have an"
+                                + " \u201Calt\u201D attribute, except under"
+                                + " certain conditions. For details, consult"
+                                + " guidance on providing text alternatives"
+                                + " for images.", imgLocator);
+                    }
+                }
+            } else if ("select" == localName && node.isOptionNeeded()) {
+                if (!node.hasOption()) {
+                    err("A \u201Cselect\u201D element with a"
+                            + " \u201Crequired\u201D attribute and without a"
+                            + " \u201Cmultiple\u201D attribute, and whose size"
+                            + " is \u201C1\u201D, must have a child"
+                            + " \u201Coption\u201D element.");
+                }
+                if (node.nonEmptyOptionLocator() != null) {
+                    err("The first child \u201Coption\u201D element of a"
+                            + " \u201Cselect\u201D element with a"
+                            + " \u201Crequired\u201D attribute and without a"
+                            + " \u201Cmultiple\u201D attribute, and whose size"
+                            + " is \u201C1\u201D, must have either an empty"
+                            + " \u201Cvalue\u201D attribute, or must have no"
+                            + " text content.", node.nonEmptyOptionLocator());
+                }
+            } else if ("option" == localName && !stack[currentPtr].hasOption()) {
+                stack[currentPtr].setOptionFound();
+            }
+        }
         if ((locator = openActiveDescendants.remove(node)) != null) {
             err(
                     "The \u201Caria-activedescendant\u201D attribute must refer to a descendant element.",
@@ -736,12 +1062,14 @@ public class Assertions extends Checker {
         reset();
         stack = new StackNode[32];
         currentPtr = 0;
+        currentFigurePtr = -1;
         stack[0] = null;
     }
 
     public void reset() {
         openSingleSelects.clear();
         openLabels.clear();
+        openMediaElements.clear();
         openActiveDescendants.clear();
         contextmenuReferences.clear();
         menuIds.clear();
@@ -759,6 +1087,8 @@ public class Assertions extends Checker {
      */
     @Override public void startElement(String uri, String localName,
             String name, Attributes atts) throws SAXException {
+        boolean w3cBranding = "1".equals(System.getProperty("nu.validator.servlet.w3cbranding")) ? true
+            : false;
         Set<String> ids = new HashSet<String>();
         String role = null;
         String activeDescendant = null;
@@ -782,6 +1112,10 @@ public class Assertions extends Checker {
             boolean usemap = false;
             boolean ismap = false;
             boolean selected = false;
+            boolean itemid = false;
+            boolean itemref = false;
+            boolean itemscope = false;
+            boolean itemtype = false;
             boolean languageJavaScript = false;
             boolean typeNotTextJavaScript = false;
             String xmlLang = null;
@@ -836,6 +1170,14 @@ public class Assertions extends Checker {
                         selected = true;
                     } else if ("usemap" == attLocal && "input" != localName) {
                         usemap = true;
+                    } else if ("itemid" == attLocal) {
+                        itemid = true;
+                    } else if ("itemref" == attLocal) {
+                        itemref = true;
+                    } else if ("itemscope" == attLocal) {
+                        itemscope = true;
+                    } else if ("itemtype" == attLocal) {
+                        itemtype = true;
                     } else if ("language" == attLocal
                             && lowerCaseLiteralEqualsIgnoreAsciiCaseString(
                                     "javascript", atts.getValue(i))) {
@@ -864,6 +1206,17 @@ public class Assertions extends Checker {
                                     + localName
                                     + "\u201D element is obsolete. Use CSS instead.");
                         }
+                    } else if ("dropzone" == attLocal) {
+                        String[] tokens = atts.getValue(i).toString().split(
+                                "[ \\t\\n\\f\\r]+");
+                        Arrays.sort(tokens);
+                        for (int j = 0; j < tokens.length; j++) {
+                            String keyword = tokens[j];
+                            if (j > 0 && keyword.equals(tokens[j - 1])) {
+                                err("Duplicate keyword " + keyword
+                                        + ". Each keyword must be unique.");
+                            }
+                        }
                     }
                 } else if ("http://www.w3.org/XML/1998/namespace" == attUri) {
                     if ("lang" == atts.getLocalName(i)) {
@@ -876,6 +1229,36 @@ public class Assertions extends Checker {
                     if (attVal.length() != 0) {
                         ids.add(attVal);
                     }
+                }
+            }
+
+            if ("figure" == localName) {
+                currentFigurePtr = currentPtr + 1;
+            }
+            if ((ancestorMask & FIGURE_MASK) != 0) {
+                if ("img" == localName) {
+                    if (stack[currentFigurePtr].hasImg()) {
+                        stack[currentFigurePtr].setEmbeddedContentFound();
+                    } else {
+                        stack[currentFigurePtr].setImgFound();
+                    }
+                } else if ("audio" == localName || "canvas" == localName
+                        || "embed" == localName || "iframe" == localName
+                        || "math" == localName || "object" == localName
+                        || "svg" == localName || "video" == localName) {
+                    stack[currentFigurePtr].setEmbeddedContentFound();
+                }
+            }
+
+            if ("option" == localName && !parent.hasOption()) {
+                if (atts.getIndex("", "value") < 0) {
+                    parent.setNoValueOptionFound();
+                } else if (atts.getIndex("", "value") > -1
+                        && "".equals(atts.getValue("", "value"))) {
+                    parent.setEmptyValueOptionFound();
+                } else {
+                    parent.setNonEmptyOption((new LocatorImpl(
+                            getDocumentLocator())));
                 }
             }
 
@@ -926,12 +1309,32 @@ public class Assertions extends Checker {
                 }
             }
 
-            // Required ancestors
+            // Ancestor requirements/restrictions
             if ("area" == localName && ((ancestorMask & MAP_MASK) == 0)) {
                 err("The \u201Carea\u201D element must have a \u201Cmap\u201D ancestor.");
-            } else if ("img" == localName && ismap
-                    && ((ancestorMask & HREF_MASK) == 0)) {
-                err("The \u201Cimg\u201D element with the \u201Cismap\u201D attribute set must have an \u201Ca\u201D ancestor with the \u201Chref\u201D attribute.");
+            } else if ("img" == localName) {
+                String titleVal = atts.getValue("", "title");
+                if (ismap && ((ancestorMask & HREF_MASK) == 0)) {
+                    err("The \u201Cimg\u201D element with the "
+                            + "\u201Cismap\u201D attribute set must have an "
+                            + "\u201Ca\u201D ancestor with the "
+                            + "\u201Chref\u201D attribute.");
+                }
+                if (atts.getIndex("", "alt") < 0) {
+                    if (w3cBranding || (titleVal == null || "".equals(titleVal))) {
+                        if ((ancestorMask & FIGURE_MASK) == 0) {
+                            err("An \u201Cimg\u201D element must have an"
+                                    + " \u201Calt\u201D attribute, except under"
+                                    + " certain conditions. For details, consult"
+                                    + " guidance on providing text alternatives"
+                                    + " for images.");
+                        } else {
+                            stack[currentFigurePtr].setFigcaptionNeeded();
+                            stack[currentFigurePtr].addImageLackingAlt(new LocatorImpl(
+                                    getDocumentLocator()));
+                        }
+                    }
+                }
             } else if ("input" == localName || "button" == localName
                     || "select" == localName || "textarea" == localName
                     || "keygen" == localName) {
@@ -960,6 +1363,46 @@ public class Assertions extends Checker {
                         err("Any \u201C"
                                 + localName
                                 + "\u201D descendant of a \u201Clabel\u201D element with a \u201Cfor\u201D attribute must have an ID value that matches that \u201Cfor\u201D attribute.");
+                    }
+                }
+            } else if ("table" == localName) {
+                if (atts.getIndex("", "summary") >= 0) {
+                    err("The \u201Csummary\u201D attribute is obsolete."
+                            + " Consider describing the structure of the"
+                            + " \u201Ctable\u201D in a \u201Ccaption\u201D "
+                            + " element or in a \u201Cfigure\u201D element "
+                            + " containing the \u201Ctable\u201D; or,"
+                            + " simplify the structure of the"
+                            + " \u201Ctable\u201D so that no description"
+                            + " is needed.");
+                }
+                if (atts.getIndex("", "border") > -1
+                        && (!("".equals(atts.getValue("", "border")) || "1".equals(atts.getValue(
+                                "", "border"))))) {
+                    err("The value of the \u201Cborder\u201D attribute"
+                            + " on the \u201Ctable\u201D element"
+                            + " must be either \u201C1\u201D or"
+                            + " the empty string. To regulate the"
+                            + " thickness of table borders, Use CSS instead.");
+                }
+            } else if ("track" == localName && atts.getIndex("", "default") >= 0) {
+                for (Map.Entry<StackNode, TaintableLocatorImpl> entry : openMediaElements.entrySet()) {
+                    StackNode node = entry.getKey();
+                    TaintableLocatorImpl locator = entry.getValue();
+                    if (node.isTrackDescendant()) {
+                        err("The \u201Cdefault\u201D attribute must not occur"
+                                + " on more than one \u201Ctrack\u201D element"
+                                + " within the same \u201Caudio\u201D or"
+                                + " \u201Cvideo\u201D element.");
+                        if (!locator.isTainted()) {
+                            warn("\u201Caudio\u201D or \u201Cvideo\u201D element"
+                                    + " has more than one \u201Ctrack\u201D child"
+                                    + " element with a \u201Cdefault\u201D attribute.",
+                                    locator);
+                            locator.markTainted();
+                        }
+                    } else {
+                        node.setTrackDescendants();
                     }
                 }
             }
@@ -1066,15 +1509,29 @@ public class Assertions extends Checker {
                 }
             }
 
-            // script language
-            else if ("script" == localName && languageJavaScript
-                    && typeNotTextJavaScript) {
-                err("A \u201Cscript\u201D element with the \u201Clanguage=\"JavaScript\"\u201D attribute set must not have a \u201Ctype\u201D attribute whose value is not \u201Ctext/javascript\u201D.");
+            // script
+            else if ("script" == localName) {
+                // script language
+                if (languageJavaScript && typeNotTextJavaScript) {
+                    err("A \u201Cscript\u201D element with the \u201Clanguage=\"JavaScript\"\u201D attribute set must not have a \u201Ctype\u201D attribute whose value is not \u201Ctext/javascript\u201D.");
+                }
+                // src-less script
+                if (atts.getIndex("", "src") < 0) {
+                    if (atts.getIndex("", "charset") >= 0) {
+                        err("Element \u201Cscript\u201D must not have attribute \u201Ccharset\u201D unless attribute \u201Csrc\u201D is also specified.");
+                    }
+                    if (atts.getIndex("", "defer") >= 0) {
+                        err("Element \u201Cscript\u201D must not have attribute \u201Cdefer\u201D unless attribute \u201Csrc\u201D is also specified.");
+                    }
+                    if (atts.getIndex("", "async") >= 0) {
+                        err("Element \u201Cscript\u201D must not have attribute \u201Casync\u201D unless attribute \u201Csrc\u201D is also specified.");
+                    }
+                }
             }
 
             // bdo required attrs
             else if ("bdo" == localName && atts.getIndex("", "dir") < 0) {
-                err("A \u201Cbdo\u201D element must have an \u201Cdir\u201D attribute.");
+                err("Element \u201Cbdo\u201D must have attribute \u201Cdir\u201D.");
             }
 
             // lang and xml:lang for XHTML5
@@ -1115,6 +1572,23 @@ public class Assertions extends Checker {
                         getDocumentLocator()), list));
             }
 
+            // input@type=button
+            if ("input" == localName
+                    && lowerCaseLiteralEqualsIgnoreAsciiCaseString("button",
+                            atts.getValue("", "type"))) {
+                if (atts.getValue("", "value") == null
+                        || "".equals(atts.getValue("", "value"))) {
+                    err("Element \u201Cinput\u201D with attribute \u201Ctype\u201D whose value is \u201Cbutton\u201D must have non-empty attribute \u201Cvalue\u201D.");
+                }
+            }
+
+            // track
+            if ("track" == localName) {
+                if ("".equals(atts.getValue("", "label"))) {
+                    err("Attribute \u201Clabel\u201D for element \u201Ctrack\u201D must have non-empty value.");
+                }
+            }
+
             // multiple selected options
             if ("option" == localName && selected) {
                 for (Map.Entry<StackNode, Locator> entry : openSingleSelects.entrySet()) {
@@ -1125,6 +1599,26 @@ public class Assertions extends Checker {
                         node.setSelectedOptions();
                     }
                 }
+            }
+            if ("meta" == localName) {
+                if (lowerCaseLiteralEqualsIgnoreAsciiCaseString(
+                        "content-language", atts.getValue("", "http-equiv"))) {
+                    err("Using the \u201Cmeta\u201D element to specify the"
+                        + " document-wide default language is obsolete."
+                        + " Consider specifying the language on the root"
+                        + " element instead.");
+                }
+            }
+
+            // microdata
+            if (itemid && !(itemscope && itemtype)) {
+                err("The \u201Citemid\u201D attribute must not be specified on elements that do not have both an \u201Citemscope\u201D attribute and an \u201Citemtype\u201D attribute specified.");
+            }
+            if (itemref && !itemscope) {
+                err("The \u201Citemref\u201D attribute must not be specified on elements that do not have an \u201Citemscope\u201D attribute specified.");
+            }
+            if (itemtype && !itemscope) {
+                err("The \u201Citemtype\u201D attribute must not be specified on elements that do not have an \u201Citemscope\u201D attribute specified.");
             }
         } else {
             int len = atts.getLength();
@@ -1216,8 +1710,30 @@ public class Assertions extends Checker {
                 openSingleSelects.put(child, getDocumentLocator());
             } else if ("label" == localName) {
                 openLabels.put(child, new LocatorImpl(getDocumentLocator()));
+            } else if ("video" == localName || "audio" == localName ) {
+                openMediaElements.put(child, new TaintableLocatorImpl(getDocumentLocator()));
             }
             push(child);
+            if ("select" == localName && atts.getIndex("", "required") > -1
+                    && atts.getIndex("", "multiple") < 0) {
+                if (atts.getIndex("", "size") > -1) {
+                    String size = trimSpaces(atts.getValue("", "size"));
+                    if (!"".equals(size)) {
+                        try {
+                            if ((size.length() > 1 && size.charAt(0) == '+' && Integer.parseInt(size.substring(1)) == 1)
+                                    || Integer.parseInt(size) == 1) {
+                                child.setOptionNeeded();
+                            } else {
+                                // do nothing
+                            }
+                        } catch (NumberFormatException e) {
+                        }
+                    }
+                } else {
+                    // default size is 1
+                    child.setOptionNeeded();
+                }
+            }
         } else {
             StackNode child = new StackNode(ancestorMask, null, role,
                     activeDescendant, forAttr);
@@ -1242,7 +1758,8 @@ public class Assertions extends Checker {
      */
     @Override public void characters(char[] ch, int start, int length)
             throws SAXException {
-        for (int i = start; i < length; i++) {
+        StackNode node = peek();
+        for (int i = start; i < start + length; i++) {
             char c = ch[i];
             switch (c) {
                 case ' ':
@@ -1251,7 +1768,37 @@ public class Assertions extends Checker {
                 case '\n':
                     continue;
                 default:
-                    processChildContent(peek());
+                    if ("figcaption".equals(node.name)
+                            || (node.ancestorMask & FIGCAPTION_MASK) != 0) {
+                        if ((node.ancestorMask & FIGURE_MASK) != 0) {
+                            stack[currentFigurePtr].setFigcaptionContentFound();
+                        }
+                        // for any ancestor figures of the parent figure
+                        // of this figcaption, the content of this
+                        // figcaption counts as a text node descendant
+                        for (int j = 1; j < currentFigurePtr; j++) {
+                            if ("figure".equals(stack[currentFigurePtr - j].getName())) {
+                                stack[currentFigurePtr - j].setTextNodeFound();
+                            }
+                        }
+                    } else if ("figure".equals(node.name)
+                            || (node.ancestorMask & FIGURE_MASK) != 0) {
+                        stack[currentFigurePtr].setTextNodeFound();
+                        // for any ancestor figures of this figure, this
+                        // also counts as a text node descendant
+                        for (int k = 1; k < currentFigurePtr; k++) {
+                            if ("figure".equals(stack[currentFigurePtr - k].getName())) {
+                                stack[currentFigurePtr - k].setTextNodeFound();
+                            }
+                        }
+                    } else if ("option".equals(node.name)
+                            && !stack[currentPtr - 1].hasOption()
+                            && (!stack[currentPtr - 1].hasEmptyValueOption() || stack[currentPtr - 1].hasNoValueOption())
+                            && stack[currentPtr - 1].nonEmptyOptionLocator() == null) {
+                        stack[currentPtr - 1].setNonEmptyOption((new LocatorImpl(
+                                getDocumentLocator())));
+                    }
+                    processChildContent(node);
                     return;
             }
         }

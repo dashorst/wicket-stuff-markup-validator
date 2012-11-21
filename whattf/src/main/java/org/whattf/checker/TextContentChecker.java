@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2006 Henri Sivonen
- * Copyright (c) 2010 Mozilla Foundation
+ * Copyright (c) 2010-2011 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"), 
@@ -29,7 +29,9 @@ import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.DatatypeStreamingValidator;
 import org.whattf.datatype.Html5DatatypeException;
 import org.whattf.datatype.CdoCdcPair;
-import org.whattf.datatype.DateOrTimeContent;
+import org.whattf.datatype.TimeDatetime;
+import org.whattf.datatype.ScriptDocumentation;
+import org.whattf.datatype.Script;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -40,7 +42,7 @@ import org.xml.sax.SAXException;
  * custom datatypes, this class uses objects that implement
  * <code>DatatypeStreamingValidator</code>.
  * 
- * @version $Id: TextContentChecker.java 562 2010-05-25 15:09:47Z sideshowbarker $
+ * @version $Id$
  * @author hsivonen
  */
 public final class TextContentChecker extends Checker {
@@ -79,10 +81,16 @@ public final class TextContentChecker extends Checker {
         if ("http://www.w3.org/1999/xhtml".equals(uri)) {
             if ("time".equals(localName)) {
                 if (atts.getIndex("", "datetime") < 0) {
-                    return DateOrTimeContent.THE_INSTANCE.createStreamingValidator(null);
+                    return TimeDatetime.THE_INSTANCE.createStreamingValidator(null);
                 }
             }
-            if ("style".equals(localName)
+            if ("script".equals(localName)) {
+                if (atts.getIndex("", "src") < 0) {
+                    return Script.THE_INSTANCE.createStreamingValidator(null);
+                } else {
+                    return ScriptDocumentation.THE_INSTANCE.createStreamingValidator(null);
+                }
+            } else if ("style".equals(localName)
                     || "textarea".equals(localName)
                     || "title".equals(localName)) {
                 return CdoCdcPair.THE_INSTANCE.createStreamingValidator(null);
@@ -123,9 +131,28 @@ public final class TextContentChecker extends Checker {
                     if ("time".equals(localName)) {
                         try {
                             errBadTextContent(e,
-                                    DateOrTimeContent.class,
+                                    TimeDatetime.class,
                                     localName, uri);
                         } catch (ClassNotFoundException ce) {
+                        }
+                    } else if ("script".equals(localName)) {
+                        // need cast to Html5DatatypeException in order to check
+                        // what HTML5 datatype class this exception of for
+                        assert e instanceof Html5DatatypeException : "Not an Html5DatatypeException";
+                        Html5DatatypeException ex5 = (Html5DatatypeException) e;
+                        if (Script.class.equals(ex5.getDatatypeClass())) {
+                            try {
+                                errBadTextContent(e, Script.class, localName,
+                                        uri);
+                            } catch (ClassNotFoundException ce) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            try {
+                                errBadTextContent(e, ScriptDocumentation.class,
+                                        localName, uri);
+                            } catch (ClassNotFoundException ce) {
+                            }
                         }
                     } else if ("style".equals(localName)) {
                         try {

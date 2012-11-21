@@ -30,7 +30,7 @@ import org.xml.sax.SAXParseException;
 /**
  * A table cell for table integrity checking.
  * 
- * @version $Id: Cell.java 169 2007-05-25 07:21:55Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 final class Cell implements Locator {

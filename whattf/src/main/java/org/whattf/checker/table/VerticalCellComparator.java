@@ -28,7 +28,7 @@ import java.util.Comparator;
  * Compares cells first by their <code>bottom</code> field and then by their 
  * <code>left</code> field. The cells can never be equal.
  * 
- * @version $Id: VerticalCellComparator.java 169 2007-05-25 07:21:55Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 final class VerticalCellComparator implements Comparator<Cell> {

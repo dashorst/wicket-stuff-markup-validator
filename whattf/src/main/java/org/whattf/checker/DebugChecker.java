@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
 /**
  * Dumps the parse events as warnings.
  * 
- * @version $Id: DebugChecker.java 189 2007-10-08 11:27:05Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public final class DebugChecker extends Checker {

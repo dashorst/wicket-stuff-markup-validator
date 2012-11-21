@@ -40,7 +40,7 @@ import org.xml.sax.helpers.LocatorImpl;
  * Represents an XHTML table for table integrity checking. Handles 
  * table-significant parse events and keeps track of columns.
  * 
- * @version $Id: Table.java 205 2007-10-14 19:43:03Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 final class Table {

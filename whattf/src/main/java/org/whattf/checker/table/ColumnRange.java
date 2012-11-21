@@ -28,7 +28,7 @@ import org.xml.sax.Locator;
  * Represents a contiguous range of columns that was established by a single 
  * element and that does not yet have cells in it.
  * 
- * @version $Id: ColumnRange.java 189 2007-10-08 11:27:05Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 final class ColumnRange {

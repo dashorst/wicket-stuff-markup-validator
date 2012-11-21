@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
 /**
  * Represents a row group (explicit or implicit) for table integrity checking.
  * 
- * @version $Id: RowGroup.java 169 2007-05-25 07:21:55Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 final class RowGroup {

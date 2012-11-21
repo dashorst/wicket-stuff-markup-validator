@@ -35,7 +35,7 @@ import com.thaiopensource.validate.Validator;
 /**
  * Wraps a <code>Checker</code> so that it can be used like a Jing <code>Validator</code>.
  * 
- * @version $Id: CheckerValidator.java 169 2007-05-25 07:21:55Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public final class CheckerValidator implements Validator {

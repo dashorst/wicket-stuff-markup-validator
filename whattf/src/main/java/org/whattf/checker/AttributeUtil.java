@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 /**
  * Static utilities for working with (X)HTML5 attribute values.
  * 
- * @version $Id: AttributeUtil.java 169 2007-05-25 07:21:55Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public class AttributeUtil {
@@ -126,5 +126,33 @@ public class AttributeUtil {
         }
         return list.toArray(EMPTY_STRING_ARRAY);
     }
-
+    
+    /**
+     * Checks if <code>string</code> matches <code>lowerCaseLiteral</code> when
+     * ASCII-lowercased.
+     * @param lowerCaseLiteral a lower-case literal
+     * @param string potentially mixed-case string or <code>null</code>
+     * @return <code>true</code> if <code>string</code> matches 
+     * <code>lowerCaseLiteral</code> when ASCII-lowercased
+     */
+    public static boolean lowerCaseLiteralEqualsIgnoreAsciiCaseString(String lowerCaseLiteral,
+            String string) {
+        if (string == null) {
+            return false;
+        }
+        if (lowerCaseLiteral.length() != string.length()) {
+            return false;
+        }
+        for (int i = 0; i < lowerCaseLiteral.length(); i++) {
+            char c0 = lowerCaseLiteral.charAt(i);
+            char c1 = string.charAt(i);
+            if (c1 >= 'A' && c1 <= 'Z') {
+                c1 += 0x20;
+            }
+            if (c0 != c1) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

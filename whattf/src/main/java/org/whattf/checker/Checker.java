@@ -39,7 +39,7 @@ import org.xml.sax.SAXParseException;
  * methods here are stubs that do nothing. Subclasses, therefore, never 
  * need to call the superclass methods. 
  * 
- * @version $Id: Checker.java 206 2007-10-15 07:51:34Z hsivonen $
+ * @version $Id$
  * @author hsivonen
  */
 public abstract class Checker implements ContentHandler {
