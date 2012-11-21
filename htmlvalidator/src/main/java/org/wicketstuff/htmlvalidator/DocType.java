@@ -11,6 +11,8 @@ import nu.validator.htmlparser.common.Heuristics;
 import nu.validator.htmlparser.common.XmlViolationPolicy;
 import nu.validator.htmlparser.sax.HtmlParser;
 
+import org.wicketstuff.htmlvalidator.xml.dataattributes.DataAttributeDroppingSchemaWrapper;
+import org.wicketstuff.htmlvalidator.xml.langattributes.XmlLangAttributeDroppingSchemaWrapper;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -49,7 +51,7 @@ public enum DocType
 				CompactSchemaReader.getInstance().createSchema(html5In, properties.toPropertyMap());
 			Schema assertions =
 				new AutoSchemaReader().createSchema(assertionsIn, properties.toPropertyMap());
-			return new CombineSchema(base, assertions, properties.toPropertyMap());
+			return new XmlLangAttributeDroppingSchemaWrapper(new DataAttributeDroppingSchemaWrapper(new CombineSchema(base, assertions, properties.toPropertyMap())));
 		}
 	},
 	XHTML10_STRICT("-//W3C//DTD XHTML 1.0 Strict//EN")
