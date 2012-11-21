@@ -19,17 +19,14 @@ validator](http://validator.nu).
 Usage
 -----
 
-Make sure you use Wicket 1.5. This validator does not run on Wicket 1.4 or 
-earlier. Java 6 is also a minimum requirement.
-
-There is no release available at this time. You have to build a version locally yourself (using [Apache Maven](http://maven.apache.org).
+Make sure you use Wicket 6.0.0 or newer. This validator does not run on earlier versions, but is compatible with newer versions. Java 6 is also a minimum requirement.
 
 Add the Wicket Stuff validator to your POM as a dependency:
 
     <dependency>
         <groupId>org.wicketstuff.htmlvalidator</groupId>
-        <artifactId>htmlvalidator</artifactId>
-        <version>1.5-SNAPSHOT</version>
+        <artifactId>wicketstuff-htmlvalidator</artifactId>
+        <version>1.8</version>
     </dependency>
 
 Depending on your setup you need to use a different `scope` (for example test
