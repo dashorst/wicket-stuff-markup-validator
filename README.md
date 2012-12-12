@@ -23,31 +23,37 @@ Make sure you use Wicket 6.0.0 or newer. This validator does not run on earlier 
 
 Add the Wicket Stuff validator to your POM as a dependency:
 
-    <dependency>
-        <groupId>org.wicketstuff.htmlvalidator</groupId>
-        <artifactId>wicketstuff-htmlvalidator</artifactId>
-        <version>1.9</version>
-    </dependency>
+```xml
+<dependency>
+    <groupId>org.wicketstuff.htmlvalidator</groupId>
+    <artifactId>wicketstuff-htmlvalidator</artifactId>
+    <version>1.9</version>
+</dependency>
+```
 
 Depending on your setup you need to use a different `scope` (for example test
 or provided to prevent the validator to be deployed to production).
 
 Add the following lines to your `Application`'s init method:
 
+```java
     @Override
     protected void init() {
         super.init();
         getMarkupSettings().setStripWicketTags(true);
         getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
     }
+```
 
 You might want to put a check for the configuration of your application 
 around the addition of the response filter, to ensure that the filter doesn't run
 in production mode:
 
+```java
     if (RuntimeConfigurationType.DEVELOPMENT == getConfigurationType()) {
         getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
     }
+```
 
 License
 -------
@@ -62,9 +68,11 @@ Building Wicket.Validator is not difficult: you need to have Java 6 and Maven 3 
 and know how to checkout sources from github. Assuming you know how to use Git, you need 
 to do the following on a command prompt:
 
+```bash
     $ git clone git://github.com/dashorst/wicket-stuff-markup-validator.git
     $ cd wicket-stuff-markup-validator
     $ mvn install
+```
 
 Then you can add the Wicket.Validator dependency to your own application using Maven.
 
