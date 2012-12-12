@@ -26,7 +26,7 @@ Add the Wicket Stuff validator to your POM as a dependency:
     <dependency>
         <groupId>org.wicketstuff.htmlvalidator</groupId>
         <artifactId>wicketstuff-htmlvalidator</artifactId>
-        <version>1.8</version>
+        <version>1.9</version>
     </dependency>
 
 Depending on your setup you need to use a different `scope` (for example test
