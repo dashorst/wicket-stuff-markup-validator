@@ -55,6 +55,12 @@ import com.thaiopensource.validate.Validator;
  * Override {@link #onInvalidMarkup(AppendingStringBuffer, ValidationReport)} to
  * change this default behavior.
  * 
+ * <h3>Configuration</h3>
+ * 
+ * There are several {@link HtmlValidationConfiguration configuration options}
+ * available for the validator. The first option is the ability to suppress the
+ * popup of the window when a particular error is discovered.
+ * 
  * <h3>Metadata</h3>
  * 
  * The filter reports the validation result in the response page's meta data.
@@ -74,15 +80,31 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 
 	private final HtmlValidationConfiguration configuration;
 
+	/**
+	 * Constructs the validator using the default configuration object. You can
+	 * access and modify configuration through {@link #getConfiguration()}.
+	 */
 	public HtmlValidationResponseFilter() {
 		this(new HtmlValidationConfiguration());
 	}
 
+	/**
+	 * Constructs the validator with a custom configuration object. You can
+	 * access and modify configuration through {@link #getConfiguration()}.
+	 * 
+	 * @param configuration
+	 *            a custom configuration object
+	 */
 	public HtmlValidationResponseFilter(
 			HtmlValidationConfiguration configuration) {
 		this.configuration = configuration;
 	}
 
+	/**
+	 * Gets the configuration.
+	 * 
+	 * @return
+	 */
 	public HtmlValidationConfiguration getConfiguration() {
 		return configuration;
 	}
