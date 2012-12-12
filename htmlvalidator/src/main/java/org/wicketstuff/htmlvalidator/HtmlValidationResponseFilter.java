@@ -72,6 +72,21 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 	private static final Logger log = LoggerFactory
 			.getLogger(HtmlValidationResponseFilter.class);
 
+	private final HtmlValidationConfiguration configuration;
+
+	public HtmlValidationResponseFilter() {
+		this(new HtmlValidationConfiguration());
+	}
+
+	public HtmlValidationResponseFilter(
+			HtmlValidationConfiguration configuration) {
+		this.configuration = configuration;
+	}
+
+	public HtmlValidationConfiguration getConfiguration() {
+		return configuration;
+	}
+
 	/**
 	 * Called when the validated markup does not contain any errors.
 	 * 
@@ -173,8 +188,8 @@ public class HtmlValidationResponseFilter implements IResponseFilter {
 	private ValidationReport validateMarkup(String response, DocType docType)
 			throws Exception {
 		IRequestablePage responsePage = getResponsePage();
-		ValidationReport report = new ValidationReport(responsePage, response,
-				docType);
+		ValidationReport report = new ValidationReport(configuration,
+				responsePage, response, docType);
 
 		PropertyMapBuilder properties = new PropertyMapBuilder();
 		properties.put(ValidateProperty.ERROR_HANDLER, report);

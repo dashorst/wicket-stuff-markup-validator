@@ -20,14 +20,15 @@ public class ValidationReport implements ErrorHandler {
 			.getLogger(ValidationReport.class);
 	private List<SAXParseException> parseErrors = new ArrayList<SAXParseException>();
 
-	private String doctype;
-	private String markup;
-	private String[] lines;
+	private final HtmlValidationConfiguration configuration;
+	private final String doctype;
+	private final String markup;
+	private final String[] lines;
+	private final String page;
 
-	private String page;
-
-	public ValidationReport(IRequestablePage page, String markup,
-			DocType doctype) {
+	public ValidationReport(HtmlValidationConfiguration configuration,
+			IRequestablePage page, String markup, DocType doctype) {
+		this.configuration = configuration;
 		if (page != null)
 			this.page = page.getClass().getName();
 		else
@@ -63,6 +64,14 @@ public class ValidationReport implements ErrorHandler {
 		parseErrors.add(exception);
 	}
 
+	public boolean isShowReportWindow() {
+		for (SAXParseException error : parseErrors) {
+			if (configuration.mustShowWindowForError(error))
+				return true;
+		}
+		return false;
+	}
+
 	public boolean isValid() {
 		return parseErrors.isEmpty();
 	}
@@ -87,7 +96,7 @@ public class ValidationReport implements ErrorHandler {
 	public String getBodyMarkup() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<div id=\"validationreportwindow\" class=\"validation-report\""
-				+ (isValid() ? " style=\"display:none\"" : "") + ">");
+				+ (isShowReportWindow() ? "" : " style=\"display:none\"") + ">");
 		sb.append("<div class=\"validation-header\">\n");
 		sb.append("<button class=\"close\" onclick=\"document.getElementById('validationreportwindow').style.display='none';\">×</button>\n");
 		if (isValid())
