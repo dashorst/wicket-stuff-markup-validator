@@ -6,7 +6,7 @@
 	top: 50%;
 	left: 50%;
 	z-index: 1050;
-	width: 880px;
+	width: 895px;
 	margin: -250px 0 0 -440px;
 	overflow: auto;
 	background-color: white;
@@ -55,7 +55,7 @@
 .validation-report input {
 	display: inline-block;
 	margin-bottom: 2px;
-	width: 666px;
+	width: 681px;
 	height: 18px;
 	padding: 4px;
 	font-size: 13px;
@@ -213,7 +213,7 @@ td.linenrs {
 	vertical-align:top;
 	padding-top:1em;
 	text-align:right;
-	width:3em;
+	width:5em;
 }
 
 .validation-report pre code.error, pre code.error * {
