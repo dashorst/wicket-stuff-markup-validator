@@ -9,8 +9,10 @@ public class HtmlValidatorApplication extends WebApplication {
 	protected void init() {
 		super.init();
 		getMarkupSettings().setStripWicketTags(true);
-		
-		getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
+
+		HtmlValidationResponseFilter validator = new HtmlValidationResponseFilter();
+		validator.getConfiguration().dontPopupWindowFor("element \"blink\" not allowed here");
+		getRequestCycleSettings().addResponseFilter(validator);
 	}
 
 	@Override

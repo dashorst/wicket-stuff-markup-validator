@@ -14,6 +14,29 @@ public class HtmlValidationConfiguration {
 
 	/**
 	 * Suppresses the automatic popup when all errors match the {@code regexp}.
+	 * The errors are still available in the validation report window, but won't
+	 * be 'in your face'. This is especially handy when the validator reports an
+	 * error that you can't immediately fix, but is prevalent. You want to be
+	 * able to ignore that particular error, but still get notified of any other
+	 * error.
+	 * 
+	 * For example, you can suppress the pop up for the &lt;blink&gt; tag by
+	 * configuring:
+	 * 
+	 * <pre>
+	 * {@literal
+	 * configuration.dontPopupWindowFor("element \"blink\" not allowed here");
+	 * }
+	 * </pre>
+	 * 
+	 * or just (if you want to be less specific, and ignore any errors generated
+	 * by the text blink):
+	 * 
+	 * <pre>
+	 * {@literal
+	 * configuration.dontPopupWindowFor("\"blink\"");
+	 * }
+	 * </pre>
 	 * 
 	 * @param regexp
 	 *            a regular expression for matching parse errors.
