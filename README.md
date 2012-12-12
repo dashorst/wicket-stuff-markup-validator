@@ -37,12 +37,12 @@ or provided to prevent the validator to be deployed to production).
 Add the following lines to your `Application`'s init method:
 
 ```java
-    @Override
-    protected void init() {
-        super.init();
-        getMarkupSettings().setStripWicketTags(true);
-        getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
-    }
+@Override
+protected void init() {
+    super.init();
+    getMarkupSettings().setStripWicketTags(true);
+    getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
+}
 ```
 
 You might want to put a check for the configuration of your application 
@@ -50,9 +50,9 @@ around the addition of the response filter, to ensure that the filter doesn't ru
 in production mode:
 
 ```java
-    if (RuntimeConfigurationType.DEVELOPMENT == getConfigurationType()) {
-        getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
-    }
+if (RuntimeConfigurationType.DEVELOPMENT == getConfigurationType()) {
+    getRequestCycleSettings().addResponseFilter(new HtmlValidationResponseFilter());
+}
 ```
 
 License
@@ -69,10 +69,9 @@ and know how to checkout sources from github. Assuming you know how to use Git, 
 to do the following on a command prompt:
 
 ```bash
-    $ git clone git://github.com/dashorst/wicket-stuff-markup-validator.git
-    $ cd wicket-stuff-markup-validator
-    $ mvn install
+$ git clone git://github.com/dashorst/wicket-stuff-markup-validator.git
+$ cd wicket-stuff-markup-validator
+$ mvn install
 ```
 
 Then you can add the Wicket.Validator dependency to your own application using Maven.
-
