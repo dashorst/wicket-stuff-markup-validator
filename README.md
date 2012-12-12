@@ -5,7 +5,7 @@ This project validates the output of your [Apache Wicket](http://wicket.apache.o
 application while running. It includes a error view showing each validation error,
 with line-precise error messages.
 
-![Screen shot](https://raw.github.com/dashorst/wicket-stuff-markup-validator/gh-pages/images/screen1.png)
+<img src="https://raw.github.com/dashorst/wicket-stuff-markup-validator/gh-pages/images/screen1.png" alt="Screenshot" title="Screenshot of a validation error" maxwidth="854px" />
 
 Validates the following w3c standards:
 
