@@ -102,7 +102,7 @@ Remove the current sources and copy the newly checked out one's:
 
     rm -rf wicketstuff-htmlvalidator-parent/whattf/src/main/java
     cp -r checker/syntax/non-schema/java/src wicketstuff-htmlvalidator-parent/whattf/src/main/java
-    cp -r checker/syntax/relaxng/datatype/java/src/org whattf/src/main/java
+    cp -r checker/syntax/relaxng/datatype/java/src/org wicketstuff-htmlvalidator-parent/whattf/src/main/java
     cp -r checker/validator/src/nu/validator/localentities wicketstuff-htmlvalidator-parent/whattf/src/main/resources/nu/validator
     
     rm -rf wicketstuff-htmlvalidator-parent/whattf/src/main/resources/relaxng/*
