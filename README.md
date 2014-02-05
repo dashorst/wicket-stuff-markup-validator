@@ -29,7 +29,7 @@ Add the Wicket Stuff validator to your POM as a dependency:
 <dependency>
     <groupId>org.wicketstuff.htmlvalidator</groupId>
     <artifactId>wicketstuff-htmlvalidator</artifactId>
-    <version>1.9</version>
+    <version>1.10</version>
 </dependency>
 ```
 
