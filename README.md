@@ -77,3 +77,33 @@ $ mvn install
 ```
 
 Then you can add the Wicket.Validator dependency to your own application using Maven.
+
+Original sources
+----------------
+
+Most of the sources come from the htmlvalidator service, which has
+its source code published on bitbucket.
+
+Follow the build instructions found here: https://bitbucket.org/validator/build/src
+to get all the necessary sources (patched and downloaded) onto your system.
+Just make sure that the `checker` folder is next to the clone of the wicket validator folder.
+
+
+The `whattf` module is derived from the syntax module:
+
+* java code is taken from: https://bitbucket.org/validator/syntax/src/c7989b0788cb/non-schema
+* src/main/resources is taken from: https://bitbucket.org/validator/syntax/src/c7989b0788cb73ad916980e122a470d730a51820/relaxng
+
+Retrieve the sources:
+
+    hg clone https://bitbucket.org/validator/syntax
+
+Remove the current sources and copy the newly checked out one's:
+
+    rm -rf wicketstuff-htmlvalidator-parent/whattf/src/main/java
+    cp -r checker/syntax/non-schema/java/src wicketstuff-htmlvalidator-parent/whattf/src/main/java
+    cp -r checker/syntax/relaxng/datatype/java/src/org whattf/src/main/java
+    cp -r checker/validator/src/nu/validator/localentities wicketstuff-htmlvalidator-parent/whattf/src/main/resources/nu/validator
+    
+    rm -rf wicketstuff-htmlvalidator-parent/whattf/src/main/resources/relaxng/*
+    cp checker/syntax/relaxng/* wicketstuff-htmlvalidator-parent/whattf/src/main/resources/relaxng
