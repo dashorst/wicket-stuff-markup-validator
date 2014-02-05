@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2011 Mozilla Foundation
+ * Copyright (c) 2008-2014 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"), 
@@ -39,6 +39,9 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
 public class Assertions extends Checker {
+
+    private static boolean w3cBranding = "1".equals(System.getProperty("nu.validator.servlet.w3cbranding")) ? true
+            : false;
 
     private static boolean lowerCaseLiteralEqualsIgnoreAsciiCaseString(
             String lowerCaseLiteral, String string) {
@@ -138,6 +141,22 @@ public class Assertions extends Checker {
         OBSOLETE_ELEMENTS.put(
                 "noframes",
                 "Use the \u201Ciframe\u201D element and CSS instead, or use server-side includes.");
+        if (w3cBranding) {
+            OBSOLETE_ELEMENTS.put(
+                    "hgroup",
+                    "To mark up subheadings, consider either just putting the "
+                            + "subheading into a \u201Cp\u201D element after the "
+                            + "\u201Ch1\u201D-\u201Ch6\u201D element containing the "
+                            + "main heading, or else putting the subheading directly "
+                            + "within the \u201Ch1\u201D-\u201Ch6\u201D element "
+                            + "containing the main heading, but separated from the main "
+                            + "heading by punctuation and/or within, for example, a "
+                            + "\u201Cspan class=\"subheading\"\u201D element with "
+                            + "differentiated styling. "
+                            + "To group headings and subheadings, alternative titles, "
+                            + "or taglines, consider using the \u201Cheader\u201D or "
+                            + "\u201Cdiv\u201D elements.");
+        }
     }
 
     private static final Map<String, String[]> OBSOLETE_ATTRIBUTES = new HashMap<String, String[]>();
@@ -163,12 +182,14 @@ public class Assertions extends Checker {
         OBSOLETE_ATTRIBUTES.put("event", new String[] { "script" });
         OBSOLETE_ATTRIBUTES.put("for", new String[] { "script" });
         OBSOLETE_ATTRIBUTES.put("language", new String[] { "script" });
-        OBSOLETE_ATTRIBUTES.put("longdesc", new String[] { "img", "iframe" });
+        if (!w3cBranding) {
+            OBSOLETE_ATTRIBUTES.put("longdesc",
+                    new String[] { "img", "iframe" });
+        }
         OBSOLETE_ATTRIBUTES.put("methods", new String[] { "link", "a" });
         OBSOLETE_ATTRIBUTES.put("name", new String[] { "img", "embed", "option" });
         OBSOLETE_ATTRIBUTES.put("nohref", new String[] { "area" });
         OBSOLETE_ATTRIBUTES.put("profile", new String[] { "head" });
-        OBSOLETE_ATTRIBUTES.put("rev", new String[] { "link", "a" });
         OBSOLETE_ATTRIBUTES.put("scheme", new String[] { "meta" });
         OBSOLETE_ATTRIBUTES.put("scope", new String[] { "td" });
         OBSOLETE_ATTRIBUTES.put("shape", new String[] { "a" });
@@ -221,8 +242,10 @@ public class Assertions extends Checker {
                 "Repeat the \u201Cobject\u201D element completely each time the resource is to be reused.");
         OBSOLETE_ATTRIBUTES_MSG.put("language",
                 "Use the \u201Ctype\u201D attribute instead.");
-        OBSOLETE_ATTRIBUTES_MSG.put("longdesc",
-                "Use a regular \u201Ca\u201D element to link to the description.");
+        if (!w3cBranding) {
+            OBSOLETE_ATTRIBUTES_MSG.put("longdesc",
+                    "Use a regular \u201Ca\u201D element to link to the description.");
+        }
         OBSOLETE_ATTRIBUTES_MSG.put("methods",
                 "Use the HTTP OPTIONS feature instead.");
         OBSOLETE_ATTRIBUTES_MSG.put("name",
@@ -232,9 +255,6 @@ public class Assertions extends Checker {
         OBSOLETE_ATTRIBUTES_MSG.put(
                 "profile",
                 "To declare which \u201Cmeta\u201D terms are used in the document, instead register the names as meta extensions. To trigger specific UA behaviors, use a \u201Clink\u201D element instead.");
-        OBSOLETE_ATTRIBUTES_MSG.put(
-                "rev",
-                "Use the \u201Crel\u201D attribute instead, with a term having the opposite meaning.");
         OBSOLETE_ATTRIBUTES_MSG.put(
                 "scheme",
                 "Use only one scheme per field, or make the scheme declaration part of the value.");
@@ -273,7 +293,7 @@ public class Assertions extends Checker {
         OBSOLETE_STYLE_ATTRS.put("background", new String[] { "body" });
         OBSOLETE_STYLE_ATTRS.put("bgcolor", new String[] { "table", "tr", "td",
                 "th", "body" });
-        OBSOLETE_STYLE_ATTRS.put("border", new String[] { "object" });
+        OBSOLETE_STYLE_ATTRS.put("border", new String[] { "object", "table" });
         OBSOLETE_STYLE_ATTRS.put("cellpadding", new String[] { "table" });
         OBSOLETE_STYLE_ATTRS.put("cellspacing", new String[] { "table" });
         OBSOLETE_STYLE_ATTRS.put("char", new String[] { "col", "colgroup",
@@ -313,7 +333,7 @@ public class Assertions extends Checker {
     private static final String[] SPECIAL_ANCESTORS = { "a", "address",
             "button", "caption", "dfn", "dt", "figcaption", "figure", "footer",
             "form", "header", "label", "map", "noscript", "th", "time",
-            "progress", "meter" };
+            "progress", "meter", "article", "aside", "nav" };
 
     private static int specialAncestorNumber(String name) {
         for (int i = 0; i < SPECIAL_ANCESTORS.length; i++) {
@@ -414,6 +434,11 @@ public class Assertions extends Checker {
         registerProhibitedAncestor("a", "label");
         registerProhibitedAncestor("button", "label");
         registerProhibitedAncestor("caption", "table");
+        registerProhibitedAncestor("article", "main");
+        registerProhibitedAncestor("aside", "main");
+        registerProhibitedAncestor("header", "main");
+        registerProhibitedAncestor("footer", "main");
+        registerProhibitedAncestor("nav", "main");
     }
 
     private static final int A_BUTTON_MASK = (1 << specialAncestorNumber("a"))
@@ -429,29 +454,44 @@ public class Assertions extends Checker {
 
     private static final int LABEL_FOR_MASK = (1 << 28);
 
-    private static final Map<String, Set<String>> REQUIRED_ROLE_PARENT_BY_CHILD = new HashMap<String, Set<String>>();
+    private static final Map<String, Set<String>> REQUIRED_ROLE_ANCESTOR_BY_DESCENDANT = new HashMap<String, Set<String>>();
 
-    private static void registerRequiredParentRole(String parent, String child) {
-        Set<String> parents = REQUIRED_ROLE_PARENT_BY_CHILD.get(child);
+    private static final Map<String, Set<String>> ariaOwnsIdsByRole = new HashMap<String, Set<String>>();
+
+    private static void registerRequiredAncestorRole(String parent, String child) {
+        Set<String> parents = REQUIRED_ROLE_ANCESTOR_BY_DESCENDANT.get(child);
         if (parents == null) {
             parents = new HashSet<String>();
         }
         parents.add(parent);
-        REQUIRED_ROLE_PARENT_BY_CHILD.put(child, parents);
+        REQUIRED_ROLE_ANCESTOR_BY_DESCENDANT.put(child, parents);
     }
 
     static {
-        registerRequiredParentRole("listbox", "option");
-        registerRequiredParentRole("menu", "menuitem");
-        registerRequiredParentRole("menu", "menuitemcheckbox");
-        registerRequiredParentRole("menu", "menuitemradio");
-        registerRequiredParentRole("menubar", "menuitem");
-        registerRequiredParentRole("menubar", "menuitemcheckbox");
-        registerRequiredParentRole("menubar", "menuitemradio");
-        registerRequiredParentRole("tablist", "tab");
-        registerRequiredParentRole("tree", "treeitem");
-        registerRequiredParentRole("list", "listitem");
-        registerRequiredParentRole("row", "gridcell");
+        registerRequiredAncestorRole("combobox", "option");
+        registerRequiredAncestorRole("listbox", "option");
+        registerRequiredAncestorRole("radiogroup", "option");
+        registerRequiredAncestorRole("menu", "option");
+        registerRequiredAncestorRole("menu", "menuitem");
+        registerRequiredAncestorRole("menu", "menuitemcheckbox");
+        registerRequiredAncestorRole("menu", "menuitemradio");
+        registerRequiredAncestorRole("menubar", "menuitem");
+        registerRequiredAncestorRole("menubar", "menuitemcheckbox");
+        registerRequiredAncestorRole("menubar", "menuitemradio");
+        registerRequiredAncestorRole("tablist", "tab");
+        registerRequiredAncestorRole("tree", "treeitem");
+        registerRequiredAncestorRole("tree", "option");
+        registerRequiredAncestorRole("group", "treeitem");
+        registerRequiredAncestorRole("group", "listitem");
+        registerRequiredAncestorRole("group", "menuitemradio");
+        registerRequiredAncestorRole("list", "listitem");
+        registerRequiredAncestorRole("row", "gridcell");
+        registerRequiredAncestorRole("row", "columnheader");
+        registerRequiredAncestorRole("row", "rowheader");
+        registerRequiredAncestorRole("grid", "row");
+        registerRequiredAncestorRole("grid", "rowgroup");
+        registerRequiredAncestorRole("rowgroup", "row");
+        registerRequiredAncestorRole("treegrid", "row");
     }
 
     private static final Set<String> MUST_NOT_DANGLE_IDREFS = new HashSet<String>();
@@ -462,32 +502,6 @@ public class Assertions extends Checker {
         MUST_NOT_DANGLE_IDREFS.add("aria-flowto");
         MUST_NOT_DANGLE_IDREFS.add("aria-labelledby");
         MUST_NOT_DANGLE_IDREFS.add("aria-owns");
-    }
-
-    private static final Map<String, Set<String>> ALLOWED_CHILD_ROLE_BY_PARENT = new HashMap<String, Set<String>>();
-
-    private static void registerAllowedChildRole(String parent, String child) {
-        Set<String> children = ALLOWED_CHILD_ROLE_BY_PARENT.get(parent);
-        if (children == null) {
-            children = new HashSet<String>();
-        }
-        children.add(child);
-        ALLOWED_CHILD_ROLE_BY_PARENT.put(parent, children);
-    }
-
-    static {
-        registerAllowedChildRole("listbox", "option");
-        registerAllowedChildRole("menu", "menuitem");
-        registerAllowedChildRole("menu", "menuitemcheckbox");
-        registerAllowedChildRole("menu", "menuitemradio");
-        registerAllowedChildRole("menubar", "menuitem");
-        registerAllowedChildRole("menubar", "menuitemcheckbox");
-        registerAllowedChildRole("menubar", "menuitemradio");
-        registerAllowedChildRole("tree", "treeitem");
-        registerAllowedChildRole("list", "listitem");
-        registerAllowedChildRole("radiogroup", "radio");
-        registerAllowedChildRole("tablist", "tab");
-        registerAllowedChildRole("row", "gridcell");
     }
 
     private class IdrefLocator {
@@ -933,6 +947,8 @@ public class Assertions extends Checker {
 
     private LinkedHashSet<IdrefLocator> formControlReferences = new LinkedHashSet<IdrefLocator>();
 
+    private LinkedHashSet<IdrefLocator> needsAriaOwner = new LinkedHashSet<IdrefLocator>();
+
     private Set<String> formControlIds = new HashSet<String>();
 
     private LinkedHashSet<IdrefLocator> listReferences = new LinkedHashSet<IdrefLocator>();
@@ -944,6 +960,28 @@ public class Assertions extends Checker {
     private Set<String> allIds = new HashSet<String>();
 
     private int currentFigurePtr;
+
+    private boolean hasMain;
+
+    private final void errContainedInOrOwnedBy(String role, Locator locator)
+            throws SAXException {
+        err("An element with \u201Crole=" + role + "\u201D"
+                + " must be contained in, or owned by, an element with "
+                + renderRoleSet(REQUIRED_ROLE_ANCESTOR_BY_DESCENDANT.get(role)) + ".",
+                locator);
+    }
+
+    private boolean currentElementHasRequiredAncestorRole(
+            Set<String> requiredAncestorRoles) {
+        for (String role : requiredAncestorRoles) {
+            for (int i = 0; i < currentPtr; i++) {
+                if (role.equals(stack[currentPtr - i].getRole())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * @see org.whattf.checker.Checker#endDocument()
@@ -984,6 +1022,24 @@ public class Assertions extends Checker {
                                 + idrefLocator.getAdditional()
                                 + "\u201D attribute must point to an element in the same document.",
                         idrefLocator.getLocator());
+            }
+        }
+
+        // ARIA required owners
+        for (IdrefLocator idrefLocator : needsAriaOwner) {
+            boolean foundOwner = false;
+            String role = idrefLocator.getAdditional();
+            for (String ownerRole : REQUIRED_ROLE_ANCESTOR_BY_DESCENDANT.get(role)) {
+                if (ariaOwnsIdsByRole.size() != 0
+                        && ariaOwnsIdsByRole.get(ownerRole) != null
+                        && ariaOwnsIdsByRole.get(ownerRole).contains(
+                                idrefLocator.getIdref())) {
+                    foundOwner = true;
+                    break;
+                }
+            }
+            if (!foundOwner) {
+                errContainedInOrOwnedBy(role, idrefLocator.getLocator());
             }
         }
 
@@ -1049,8 +1105,10 @@ public class Assertions extends Checker {
             }
         }
         if ((locator = openActiveDescendants.remove(node)) != null) {
-            err(
-                    "The \u201Caria-activedescendant\u201D attribute must refer to a descendant element.",
+            warn(
+                    "Attribute \u201Caria-activedescendant\u201D value should "
+                    + "either refer to a descendant element, or should "
+                    + "be accompanied by attribute \u201Caria-owns\u201D.",
                     locator);
         }
     }
@@ -1064,6 +1122,7 @@ public class Assertions extends Checker {
         currentPtr = 0;
         currentFigurePtr = -1;
         stack[0] = null;
+        hasMain = false;
     }
 
     public void reset() {
@@ -1073,6 +1132,8 @@ public class Assertions extends Checker {
         openActiveDescendants.clear();
         contextmenuReferences.clear();
         menuIds.clear();
+        ariaOwnsIdsByRole.clear();
+        needsAriaOwner.clear();
         formControlReferences.clear();
         formControlIds.clear();
         listReferences.clear();
@@ -1087,13 +1148,13 @@ public class Assertions extends Checker {
      */
     @Override public void startElement(String uri, String localName,
             String name, Attributes atts) throws SAXException {
-        boolean w3cBranding = "1".equals(System.getProperty("nu.validator.servlet.w3cbranding")) ? true
-            : false;
         Set<String> ids = new HashSet<String>();
         String role = null;
         String activeDescendant = null;
+        String owns = null;
         String forAttr = null;
         boolean href = false;
+        boolean activeDescendantWithAriaOwns = false;
 
         StackNode parent = peek();
         int ancestorMask = 0;
@@ -1153,6 +1214,8 @@ public class Assertions extends Checker {
                         role = atts.getValue(i);
                     } else if ("aria-activedescendant" == attLocal) {
                         activeDescendant = atts.getValue(i);
+                    } else if ("aria-owns" == attLocal) {
+                        owns = atts.getValue(i);
                     } else if ("list" == attLocal) {
                         list = atts.getValue(i);
                     } else if ("lang" == attLocal) {
@@ -1182,6 +1245,12 @@ public class Assertions extends Checker {
                             && lowerCaseLiteralEqualsIgnoreAsciiCaseString(
                                     "javascript", atts.getValue(i))) {
                         languageJavaScript = true;
+                    } else if ("rev" == attLocal
+                            && !("1".equals(System.getProperty("nu.validator.schema.rev-allowed")))) {
+                        err("The \u201Crev\u201D attribute on the \u201C"
+                                + localName + "\u201D element is obsolete. "
+                                + "Use the \u201Crel\u201D attribute instead, "
+                                + "with a term having the opposite meaning.");
                     } else if (OBSOLETE_ATTRIBUTES.containsKey(attLocal)
                             && "ol" != localName && "ul" != localName
                             && "li" != localName) {
@@ -1376,15 +1445,6 @@ public class Assertions extends Checker {
                             + " \u201Ctable\u201D so that no description"
                             + " is needed.");
                 }
-                if (atts.getIndex("", "border") > -1
-                        && (!("".equals(atts.getValue("", "border")) || "1".equals(atts.getValue(
-                                "", "border"))))) {
-                    err("The value of the \u201Cborder\u201D attribute"
-                            + " on the \u201Ctable\u201D element"
-                            + " must be either \u201C1\u201D or"
-                            + " the empty string. To regulate the"
-                            + " thickness of table borders, Use CSS instead.");
-                }
             } else if ("track" == localName && atts.getIndex("", "default") >= 0) {
                 for (Map.Entry<StackNode, TaintableLocatorImpl> entry : openMediaElements.entrySet()) {
                     StackNode node = entry.getKey();
@@ -1405,6 +1465,12 @@ public class Assertions extends Checker {
                         node.setTrackDescendants();
                     }
                 }
+            } else if ("main" == localName) {
+                if (hasMain) {
+                    err("A document must not include more than one"
+                            + " \u201Cmain\u201D element.");
+                }
+                hasMain = true;
             }
 
             // progress
@@ -1548,6 +1614,22 @@ public class Assertions extends Checker {
             if ("menu" == localName) {
                 menuIds.addAll(ids);
             }
+            if (role != null && owns != null) {
+                for (Set<String> value : REQUIRED_ROLE_ANCESTOR_BY_DESCENDANT.values()) {
+                    if (value.contains(role)) {
+                        String[] ownedIds = AttributeUtil.split(owns);
+                        for (int i = 0; i < ownedIds.length; i++) {
+                            Set<String> ownedIdsForThisRole = ariaOwnsIdsByRole.get(role);
+                            if (ownedIdsForThisRole == null) {
+                                ownedIdsForThisRole = new HashSet<String>();
+                            }
+                            ownedIdsForThisRole.add(ownedIds[i]);
+                            ariaOwnsIdsByRole.put(role, ownedIdsForThisRole);
+                        }
+                        break;
+                    }
+                }
+            }
             if ("datalist" == localName) {
                 listIds.addAll(ids);
             }
@@ -1635,6 +1717,8 @@ public class Assertions extends Checker {
                         role = atts.getValue(i);
                     } else if ("aria-activedescendant" == attLocal) {
                         activeDescendant = atts.getValue(i);
+                    } else if ("aria-owns" == attLocal) {
+                        owns = atts.getValue(i);
                     }
                 }
             }
@@ -1642,31 +1726,20 @@ public class Assertions extends Checker {
             allIds.addAll(ids);
         }
 
-        // ARIA required parents
-        Set<String> requiredParents = REQUIRED_ROLE_PARENT_BY_CHILD.get(role);
-        if (requiredParents != null) {
-            if (!requiredParents.contains(parentRole)) {
-                err("An element with \u201Crole=" + role + "\u201D requires "
-                        + renderRoleSet(requiredParents) + " on the parent.");
-            }
-        }
-
-        // ARIA only allowed children
-        Set<String> allowedChildren = ALLOWED_CHILD_ROLE_BY_PARENT.get(parentRole);
-        if (allowedChildren != null) {
-            if (!allowedChildren.contains(role)) {
-                err("Only elements with "
-                        + renderRoleSet(allowedChildren)
-                        + " are allowed as children of an element with \u201Crole="
-                        + parentRole + "\u201D.");
-            }
-        }
-
-        // ARIA row
-        if ("row".equals(role)) {
-            if (!("grid".equals(parentRole) || "treegrid".equals(parentRole) || (currentPtr > 1
-                    && "grid".equals(stack[currentPtr - 1].getRole()) || "treegrid".equals(stack[currentPtr - 1].getRole())))) {
-                err("An element with \u201Crole=row\u201D requires \u201Crole=treegrid\u201D or \u201Crole=grid\u201D on the parent or grandparent.");
+        // ARIA required owner/ancestors
+        Set<String> requiredAncestorRoles = REQUIRED_ROLE_ANCESTOR_BY_DESCENDANT.get(role);
+        if (requiredAncestorRoles != null && !"presentation".equals(parentRole)
+               && !"tbody".equals(localName) && !"tfoot".equals(localName)
+               && !"thead".equals(localName)) {
+            if (!currentElementHasRequiredAncestorRole(requiredAncestorRoles)) {
+                if (atts.getIndex("", "id") > -1
+                        && !"".equals(atts.getValue("", "id"))) {
+                    needsAriaOwner.add(new IdrefLocator(new LocatorImpl(
+                            getDocumentLocator()), atts.getValue("", "id"),
+                            role));
+                } else {
+                    errContainedInOrOwnedBy(role, getDocumentLocator());
+                }
             }
         }
 
@@ -1684,6 +1757,22 @@ public class Assertions extends Checker {
         }
         allIds.addAll(ids);
 
+        // aria-activedescendant accompanied by aria-owns
+        if (activeDescendant != null && !"".equals(activeDescendant)) {
+            // String activeDescendantVal = atts.getValue("",
+                    // "aria-activedescendant");
+            if (owns != null && !"".equals(owns)) {
+                activeDescendantWithAriaOwns = true;
+                // String[] tokens = AttributeUtil.split(owns);
+                // for (int i = 0; i < tokens.length; i++) {
+                    // String token = tokens[i];
+                    // if (token.equals(activeDescendantVal)) {
+                        // activeDescendantWithAriaOwns = true;
+                        // break;
+                    // }
+                // }
+            }
+        }
         // activedescendant
         for (Iterator<Map.Entry<StackNode, Locator>> iterator = openActiveDescendants.entrySet().iterator(); iterator.hasNext();) {
             Map.Entry<StackNode, Locator> entry = iterator.next();
@@ -1702,7 +1791,7 @@ public class Assertions extends Checker {
             }
             StackNode child = new StackNode(ancestorMask, localName, role,
                     activeDescendant, forAttr);
-            if (activeDescendant != null) {
+            if (activeDescendant != null && !activeDescendantWithAriaOwns) {
                 openActiveDescendants.put(child, new LocatorImpl(
                         getDocumentLocator()));
             }
@@ -1804,10 +1893,10 @@ public class Assertions extends Checker {
         }
     }
 
-    private CharSequence renderRoleSet(Set<String> requiredParents) {
+    private CharSequence renderRoleSet(Set<String> roles) {
         boolean first = true;
         StringBuilder sb = new StringBuilder();
-        for (String role : requiredParents) {
+        for (String role : roles) {
             if (first) {
                 first = false;
             } else {

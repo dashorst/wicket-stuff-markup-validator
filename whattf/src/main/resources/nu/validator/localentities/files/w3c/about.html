@@ -1,0 +1,130 @@
+<!doctype html>
+<title>About the Nu Markup Checker</title>
+<style>
+html, body, h1, div#banner, div#banner a {
+	font-weight: normal;
+	font-family: Helvetica, Arial, Sans-Serif;
+	font-size: 100%;
+}
+
+strong {
+	color: rgb(54, 93, 149);
+}
+
+a img {
+	border: 0;
+}
+
+h1#title {
+	font-family: "Myriad Web", "Myriad Pro", "Gill Sans", Helvetica, Arial, Sans-Serif;
+	background-color: #365D95;
+	color: #fdfdfd;
+	font-size: 1.6em;
+	padding: 0.430em;
+	line-height: 1;
+	border-radius: 6px;
+}
+
+h1#title a, h1#title a img {
+  background-color: #365D95;
+}
+
+h1#title a:link, h1#title a:hover, h1#title a:visited, h1#title a:active {
+  color: #fdfdfd !important;
+  text-decoration: none;
+}
+
+h1#title img {
+	vertical-align: middle;
+	margin-right: 0.7em;
+}
+
+div#banner {
+	margin: 1.5em 2em;
+}
+
+div, p, li, h2 {
+	font-family: sans-serif;
+}
+
+h2 {
+	font-size: 120%;
+	color: rgb(54, 93, 149);
+}
+
+img#w3clogo {
+	margin-right: 6px !important;
+}
+
+img#html5-logo {
+  margin-top: 12px;
+}
+
+div#banner {
+	margin-left: 3%;
+	margin-right: 3%;
+	margin-bottom: 18px
+}
+
+section {
+	margin-top: 0px;
+	padding-left: 3%;
+	margin-right: 3%;
+	margin-bottom: 12px;
+}
+
+section:last-child {
+  margin-bottom: 700px;
+}
+
+body {
+	font-family: sans-serif;
+	font-size: inherit;
+	margin: 0;
+}
+
+</style>
+<div id="banner"><h1 id="title"><a href="."><span>Nu Markup Checker</span></a></h1></div>
+
+<section id=about>
+<h2>About the Nu Markup Checker</h2>
+<p>
+Like the existing
+<a href="http://validator.w3.org/">DTD-based W3C markup validation service</a>,
+the Nu Markup Checker checks the markup of Web documents, but instead uses
+the backend from the
+<a href="http://about.validator.nu/">Validator.nu</a>
+engine, which provides
+<a href="http://about.validator.nu/#faq">non-DTD-based</a>
+markup checking.
+<p>This is an experimental checker and its behavior remains subject to
+change. In particular, because new types of error checks continue to be
+actively added to the checker, there is no guarantee provided that if the
+checker reports zero errors for a particular document at one point in time,
+it will report zero errors for that same document at some later point in
+time.
+</section>
+
+<section id=bugs>
+<h2>Reporting bugs</h2>
+<p>
+If you find any bugs, want to request a new feature, or have a question
+about the Nu Markup Checker, please
+<a href="https://www.w3.org/Bugs/Public/enter_bug.cgi?product=Validator%20%28Nu%29">file a bug report</a>
+or send an e-mail message to
+<a href="mailto:www-validator@w3.org">www-validator@w3.org</a>.
+</section>
+
+<section id=extras>
+<h2>Extras</h2>
+<p>
+<a href="http://www.paciellogroup.com/blog/author/admin/">Steve Faulkner</a>
+has created a
+<a href="http://www.paciellogroup.com/blog/2012/02/wcag-2-0-parsing-error-bookmarklet/">WCAG 2.0 parsing error bookmarklet</a>
+that you can use in conjunction with the Nu Markup Checker. It filters the
+messages emitted by the checker to show only those messages that are
+relevant to checking the
+<a href="http://www.w3.org/TR/WCAG20/#ensure-compat-parses">guidelines in section 4.1.1: Parsing</a>
+of the
+<a href="http://www.w3.org/TR/WCAG20/">Web Content Accessibility Guidelines (WCAG) 2.0 specification</a>.
+</section>

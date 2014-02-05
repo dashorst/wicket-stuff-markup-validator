@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Mozilla Foundation
+ * Copyright (c) 2011-2014 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"), 
@@ -29,12 +29,33 @@ import org.relaxng.datatype.DatatypeException;
 public class MetaName extends AbstractDatatype {
 
     private static final String[] VALID_NAMES = {
+        "aglsterms.act", // extension
+        "aglsterms.accessibility", // extension
+        "aglsterms.accessmode", // extension
+        "aglsterms.aggregationlevel", // extension
+        "aglsterms.availability", // extension
+        "aglsterms.case", // extension
+        "aglsterms.category", // extension
+        "aglsterms.datelicensed", // extension
+        "aglsterms.documenttype", // extension
+        "aglsterms.function", // extension
+        "aglsterms.isbasisfor", // extension
+        "aglsterms.isbasedon", // extension
+        "aglsterms.jurisdiction", // extension
+        "aglsterms.mandate", // extension
+        "aglsterms.protectivemarking", // extension
+        "aglsterms.regulation", // extension
+        "aglsterms.servicetype", // extension
         "alexaverifyid", // extension
         "apple-mobile-web-app-capable", // extension
         "apple-mobile-web-app-status-bar-style", // extension
+		"apple-mobile-web-app-title", // extension
         "application-name",
         "author",
         "baiduspider", // extension
+        "bug.component", // extension
+        "bug.product", // extension
+        "bug.short_desc", // extension
         "csrf-param", // extension
         "csrf-token", // extension
         "dc.date.issued", // extension
@@ -96,11 +117,15 @@ public class MetaName extends AbstractDatatype {
         "dcterms.valid", // extension
         "description",
         "designer", // extension
-        "es.title", // extension
         "essaydirectory", // extension
         "format-detection", // extension
+        "fragment", // extension
         "generator",
+        "geo.a1", // extension
+        "geo.a2", // extension
+        "geo.a3", // extension
         "geo.country", // extension
+        "geo.lmk", // extension
         "geo.placename", // extension
         "geo.position", // extension
         "geo.region", // extension
@@ -123,41 +148,74 @@ public class MetaName extends AbstractDatatype {
         "globrix.underoffer", // extension
         "google-site-verification", // extension
         "googlebot", // extension
-        "handheldfriendly", // extension
         "icbm", // extension        
         "itemsperpage", // extension
         "keywords",
         "meta_date", // extension
-        "mobileoptimized", // extension
+        "mobile-web-app-capable", // extension
+        "msapplication-config", // extension
         "msapplication-navbutton-color", // extension
         "msapplication-starturl", // extension
         "msapplication-task", // extension
+        "msapplication-tilecolor", // extension
+        "msapplication-tileimage", // extension
         "msapplication-tooltip", // extension
         "msapplication-window", // extension
         "msvalidate.01", // extension
         "norton-safeweb-site-verification", // extension
-        "publisher", //extension
         "rating", // extension
         "referrer", // extension
         "review_date", // extension
         "revisit-after", // extension
         "rights-standard", // extension
         "robots", // extension
+        "skype_toolbar", // extension
         "slurp", // extension
         "startindex", // extension
+        "startver", // extension
         "teoma", // extension
-        "totalresults", // extension
+        "twitter:app:country ", // extension
+        "twitter:app:id:googleplay", // extension
+        "twitter:app:id:ipad ", // extension
+        "twitter:app:id:iphone", // extension
+        "twitter:app:url:googleplay", // extension
+        "twitter:app:url:ipad", // extension
+        "twitter:app:url:iphone", // extension
+        "twitter:card", // extension
+        "twitter:creator", // extension
+        "twitter:creator:id", // extension
+        "twitter:description", // extension
+        "twitter:domain", // extension
+        "twitter:image", // extension
+        "twitter:image0", // extension
+        "twitter:image1", // extension
+        "twitter:image2", // extension
+        "twitter:image3", // extension
+        "twitter:image:height", // extension
+        "twitter:image:src", // extension
+        "twitter:image:width", // extension
+        "twitter:site", // extension
+        "twitter:site:id", // extension
+        "twitter:title", // extension
+        "twitter:url", // extension
         "verify-v1", // extension
         "viewport", // extension
+        "wot-verification", // extension
         "wt.ac", // extension
         "wt.ad", // extension
         "wt.cg_n", // extension
         "wt.cg_s", // extension
         "wt.mc_id", // extension
+        "wt.si_p", // extension
         "wt.sv", // extension
         "wt.ti", // extension
         "y_key", // extension
-        "yandex-verification" // extension
+        "yandex-verification", // extension
+        "zoomcategory", // extension
+        "zoomimage", // extension
+        "zoompageboost", // extension
+        "zoomtitle", // extension
+        "zoomwords" // extension
     };
     
     /**
