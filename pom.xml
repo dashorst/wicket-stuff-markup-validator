@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -9,7 +8,7 @@
 	</parent>
 	<groupId>org.wicketstuff.htmlvalidator</groupId>
 	<artifactId>wicketstuff-htmlvalidator-parent</artifactId>
-	<version>1.11-SNAPSHOT</version>
+	<version>1.11</version>
 	<packaging>pom</packaging>
 	<name>WicketStuff HTML Validator Parent pom</name>
 	<description>
@@ -62,7 +61,7 @@
 		<connection>scm:git:git@github.com:dashorst/wicket-stuff-markup-validator.git</connection>
 		<developerConnection>scm:git:git://github.com/dashorst/wicket-stuff-markup-validator.git</developerConnection>
 		<url>git@github.com:dashorst/wicket-stuff-markup-validator.git</url>
-		<tag>HEAD</tag>
+		<tag>wicketstuff-htmlvalidator-parent-1.11</tag>
 	</scm>
 	<modules>
 		<module>isorelax</module>
@@ -75,17 +74,17 @@
 			<dependency>
 				<groupId>org.wicketstuff.htmlvalidator</groupId>
 				<artifactId>wicketstuff-isorelax</artifactId>
-				<version>1.11-SNAPSHOT</version>
+				<version>1.11</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wicketstuff.htmlvalidator</groupId>
 				<artifactId>wicketstuff-jing</artifactId>
-				<version>1.11-SNAPSHOT</version>
+				<version>1.11</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wicketstuff.htmlvalidator</groupId>
 				<artifactId>wicketstuff-whattf</artifactId>
-				<version>1.11-SNAPSHOT</version>
+				<version>1.11</version>
 			</dependency>
 			<dependency>
 				<groupId>nu.validator.htmlparser</groupId>

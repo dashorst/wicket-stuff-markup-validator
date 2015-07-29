@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.wicketstuff.htmlvalidator</groupId>
 		<artifactId>wicketstuff-htmlvalidator-parent</artifactId>
-		<version>1.11-SNAPSHOT</version>
+		<version>1.11</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>wicketstuff-isorelax</artifactId>
